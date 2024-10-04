@@ -1,0 +1,60 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Link, Button } from "@nextui-org/react";
+import Nav from "../components/Navbar.tsx";
+import Footer from "../components/Footer.tsx";
+---
+
+<Layout title="CAPE">
+	<main>
+		<Nav client:load Active="Home" />
+		<!-- <Button color="primary" client:visible></Button> -->
+		<div class="w-100 h-screen bg-gray-100 grid-cols-2 grid">
+			<div class="h-screen grid content-center justify-center gap-6">
+				<div>
+					<h1 class="font-bold text-5xl">Take Online</h1>
+					<h1 class="font-bold text-5xl">Exam.</h1>
+				</div>
+				<div class="grid grid-rows-2 gap-3">
+					<h1 class="font-bold text-xl">
+						Test Takers Active Right Now
+					</h1>
+					<h3 class="font-bold text-l text-purple">200+</h3>
+				</div>
+			</div>
+			<div class="h-screen"></div>
+		</div>
+		<div class="w-100 h-screen bg-blue-500 grid grid-cols-3 gap-2 py-5">
+			<div class="grid-1 grid content-end justify-end">
+				<div class="w-52 h-80 bg-white rounded"></div>
+			</div>
+			<div class=" grid-1 grid content-center justify-center">
+				<div class="w-52 h-80 bg-white rounded"></div>
+			</div>
+			<div class=" grid-1 grid content-start justify-start">
+				<div class="w-52 h-80 bg-white rounded"></div>
+			</div>
+		</div>
+		<div
+			class="w-svw h-screen bg-orange-100 grid grow-rows-5 content-center justify-center"
+		>
+			<div class="w-svw h-20 grid-1 grid row-span-1 grid-cols-5 px-10 items-center ">
+				<div class="col-span-4 text-4xl font-bold">
+					Explore Our Exams
+				</div>
+				<div class="col-span-1 text-4xl font-bold">
+					<Button
+						as={Link}
+						className="rounded-xl border-2  bg-white"
+						href="#"
+						variant="flat"
+					>
+						Explore All
+					</Button>
+				</div>
+			</div>
+			<div class="row-span-4 w-100 h-auto"></div>
+		</div>
+		<Footer />
+	</main>
+</Layout>

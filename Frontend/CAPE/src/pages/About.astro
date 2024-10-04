@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Button } from "@nextui-org/react";
+import Nav from "../components/Navbar.tsx";
+---
+
+<Layout title="CAPE">
+	<main>
+		<Nav client:load Active="About" />
+		<!-- <Button color="primary" client:visible></Button> -->
+		<div class="w-100 h-screen bg-gray-100 grid-cols-2 grid gap-2">
+			<div class="h-screen">
+				<h1 class="font-bold text-3xl">About</h1>
+			</div>
+			<div class="h-screen"></div>
+		</div>
+	</main>
+</Layout>
