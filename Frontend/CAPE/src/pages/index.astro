@@ -1,8 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Link, Button } from "@nextui-org/react";
 import Nav from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
+import ReviewCard from "../components/ReviewCard.tsx";
 ---
 
 <Layout title="CAPE">
@@ -28,32 +28,114 @@ import Footer from "../components/Footer.tsx";
 			<div class="grid-1 grid content-end justify-end">
 				<div class="w-52 h-80 bg-white rounded"></div>
 			</div>
-			<div class=" grid-1 grid content-center justify-center">
+			<div class="grid-1 grid content-center justify-center">
 				<div class="w-52 h-80 bg-white rounded"></div>
 			</div>
-			<div class=" grid-1 grid content-start justify-start">
+			<div class="grid-1 grid content-start justify-start">
 				<div class="w-52 h-80 bg-white rounded"></div>
 			</div>
 		</div>
 		<div
-			class="w-svw h-screen bg-orange-100 grid grow-rows-5 content-center justify-center"
+			class="w-svw h-screen bg-gray-200 grid grow-rows-[min-content_auto] gap-4 py-5"
 		>
-			<div class="w-svw h-20 grid-1 grid row-span-1 grid-cols-5 px-10 items-center ">
-				<div class="col-span-4 text-4xl font-bold">
-					Explore Our Exams
+			<div class="grid-1 text-4xl font-bold px-10 items-center">
+				What others say about us
+			</div>
+			<div class="grid grid-rows-2">
+				<div class="grid grid-cols-3 gap-5 p-5">
+					<ReviewCard
+						img_src=""
+						Name="Vivek"
+						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Rupa"
+						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Ravi"
+						Content="Amet consectetur duis tempor in culpa id."
+					/>
 				</div>
-				<div class="col-span-1 text-4xl font-bold">
-					<Button
-						as={Link}
-						className="rounded-xl border-2  bg-white"
-						href="#"
-						variant="flat"
-					>
-						Explore All
-					</Button>
+				<div class="grid grid-cols-2 gap-5 p-5 justify-center">
+					<ReviewCard
+						img_src=""
+						Name="Vivek"
+						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Rupa"
+						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
+					/>
 				</div>
 			</div>
-			<div class="row-span-4 w-100 h-auto"></div>
+		</div>
+		<div
+			class="w-full h-screen grid grid-rows-[min-content_auto] p-10"
+			id="About"
+		>
+			<p class="text-4xl">About Us</p>
+			<div class="grid grid-cols-[6fr_4fr]">
+				<div class="grid grid-rows-5 py-5 gap-3">
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="grid grid-rows-2">
+					<div class="bg-gray-200"></div>
+					<div class="bg-gray-100"></div>
+				</div>
+			</div>
 		</div>
 		<Footer />
 	</main>

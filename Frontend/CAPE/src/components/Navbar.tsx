@@ -3,20 +3,16 @@ import type { ComponentInstance } from "astro";
 import LoginButton from "./LoginButton";
 import GSButton from "./GSButton";
 
-interface ActiveJSON {
-	Active: string,
-	children: ComponentInstance
-}
 
-const Nav = (Active: ActiveJSON) => {
+const Nav = (Props: any) => {
 	return (
-		<Navbar shouldHideOnScroll className="full:flex w-100" maxWidth={'full'} transition:persist>
+		<Navbar shouldHideOnScroll className="full:flex w-100" maxWidth={'full'}>
 			<NavbarBrand className="basis-5/12">
 				<p className="font-bold text-inherit">CAPE</p>
 			</NavbarBrand>
-			<NavbarContent className="hidden flex gap-4 basis-4/12" justify="end">
+			<NavbarContent className="flex gap-4 basis-4/12" justify="end">
 				<NavbarItem isActive>
-					{Active.Active == "Home" ? (
+					{Props.Active == "Home" ? (
 						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/">
 							Home
 						</Link>
@@ -28,18 +24,18 @@ const Nav = (Active: ActiveJSON) => {
 
 				</NavbarItem>
 				<NavbarItem>
-					{Active.Active == "About" ? (
-						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/About">
+					{Props.Active == "About" ? (
+						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/#About">
 							About
 						</Link>
 					) : (
-						<Link color="foreground" className="hover:underline hover:font-bold decoration-2 decoration-sky-500" href="/About">
+						<Link color="foreground" className="hover:underline hover:font-bold decoration-2 decoration-sky-500" href="/#About">
 							About
 						</Link>
 					)}
 				</NavbarItem>
 				<NavbarItem>
-					{Active.Active == "Resources" ? (
+					{Props.Active == "Resources" ? (
 						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/Resources">
 							Resources
 						</Link>
@@ -51,7 +47,7 @@ const Nav = (Active: ActiveJSON) => {
 				</NavbarItem>
 
 				<NavbarItem>
-					{Active.Active == "Contact" ? (
+					{Props.Active == "Contact" ? (
 						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/Contact">
 							Contact
 						</Link>

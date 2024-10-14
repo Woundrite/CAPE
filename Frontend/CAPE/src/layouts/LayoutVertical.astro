@@ -1,0 +1,68 @@
+---
+const { title } = Astro.props;
+import { ViewTransitions } from "astro:transitions";
+import { Link, Button } from "@nextui-org/react";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<ViewTransitions />
+	</head>
+	<body>
+		<div>
+			<!-- <Button color="primary" client:visible></Button> -->
+			<div
+				class="w-100 h-screen bg-gray-100 grid-cols-[1fr_4fr] grid"
+			>
+				<div
+					class="h-screen bg-blue-500 w-full rounded-r-3xl grid grid-rows-[1fr_3fr_1fr]"
+				>
+					<div class="w-full h-full bg-blue-500"></div>
+					<div
+						class="w-full h-full bg-blue-500 grid grid-rows-8 justify-center content-center"
+					>
+						<div class="grid content-center">
+							<Link
+								className="text-white"
+								href="/profile/dashboard"
+							>
+								Dashboard
+							</Link>
+						</div>
+						<div class="grid content-center">
+							<Link className="text-white" href="/profile/Exams"
+								>Exams</Link
+							>
+						</div>
+						<div class="grid content-center">
+							<Link className="text-white" href="#">Register</Link
+							>
+						</div>
+						<div class="grid content-center">
+							<Link className="text-white" href="#">Reports</Link>
+						</div>
+						<div class="grid content-center">
+							<Link className="text-white" href="#">Payment</Link>
+						</div>
+					</div>
+					<div
+						class="w-full h-full bg-blue-500 grid grid-rows-3 justify-center content-center"
+					>
+						<div class="grid content-center">
+							<Link className="text-white" href="#">Settings</Link
+							>
+						</div>
+						<div class="grid content-center">
+							<Link className="text-white" href="#">Sign Out</Link
+							>
+						</div>
+					</div>
+				</div>
+				<slot />
+			</div>
+		</div>
+	</body>
+</html>
