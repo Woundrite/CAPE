@@ -1,0 +1,205 @@
+---
+const { title } = Astro.props;
+import { ViewTransitions } from "astro:transitions";
+import { Link } from "@nextui-org/react";
+import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaFileAlt, FaMoneyBillWave, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'; // Icons import
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <ViewTransitions />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      .sidebar {
+        background: #473bf5; /* Custom Blue Color */
+        color: white;
+        position: fixed;
+        height: 100%;
+        width: 250px;
+        border-radius: 0 20px 20px 0;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        padding-top: 20px; /* Add padding to the top */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center items horizontally */
+      }
+      .cape-header {
+    background: rgba(173, 216, 230, 0.7); /* Light shade of blue */
+    padding: 15px; /* Padding for the header */
+    width: 80%; /* Rectangle width */
+    border-radius: 15px; /* Rounded corners */
+    text-align: center; /* Center text and icon */
+    font-weight: bold; /* Bold text */
+    font-size: 24px; /* Increased font size */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    margin-bottom: 20px; /* Space below the header */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+      .cape-icon {
+        font-size: 28px; /* Size of the icon */
+        margin-right: 10px; /* Space between icon and text */
+        color: #007bff; /* New icon color (light blue) */
+      }
+      .sidebar a {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center items */
+        padding: 15px 0; /* Vertical padding */
+        text-decoration: none;
+        color: white;
+        transition: background 0.3s;
+        width: 100%; /* Full width for clickable area */
+      }
+      .sidebar a:hover,
+      .sidebar a:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+      }
+      .icon {
+        font-size: 24px; /* Icon size */
+        margin-bottom: 5px; /* Space between icon and text */
+      }
+      .icon-label {
+        font-size: 14px; /* Button name size */
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        background: #f8fafc; /* Light Gray */
+        height: 100vh;
+        overflow-y: auto; /* Enable scrolling for long content */
+      }
+      .footer {
+        margin-top: auto; /* Push footer to the bottom */
+        padding: 10px 0; /* Padding for footer */
+        text-align: center; /* Center the footer */
+        width: 100%; /* Full width for clickable area */
+      }
+      .footer a {
+        margin: 0; /* Remove margin for footer links */
+      }
+      .settings-container {
+        display: flex;
+        justify-content: center; /* Center the settings container */
+        align-items: center; /* Align items vertically */
+        height: 100%; /* Full height */
+        backdrop-filter: blur(5px); /* Background blur */
+      }
+      .settings-modal {
+        background: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+        border-radius: 15px; /* Rounded corners */
+        padding: 20px; /* Padding inside modal */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        width: 80%; /* Modal width */
+        max-width: 500px; /* Max width for the modal */
+      }
+      h1, h2 {
+        margin: 10px 0; /* Margin for headings */
+      }
+      input {
+        width: 100%; /* Full width for inputs */
+        padding: 10px; /* Padding for inputs */
+        border-radius: 5px; /* Rounded corners */
+        border: 1px solid #ccc; /* Border style */
+        margin-bottom: 10px; /* Space below inputs */
+      }
+      .save-button {
+        background-color: #473bf5; /* Button color */
+        color: white; /* Text color */
+        border: none; /* No border */
+        border-radius: 5px; /* Rounded corners */
+        padding: 10px; /* Padding for buttons */
+        cursor: pointer; /* Pointer cursor on hover */
+        width: 100%; /* Full width for buttons */
+      }
+      .save-button:hover {
+        background-color: #3b2eeb; /* Darker shade on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="sidebar">
+        <div class="cape-header">
+          <FaHome className="cape-icon" /> <!-- Alternative Icon -->
+          CAPE
+        </div>
+        <Link href="/profile/dashboard">
+          <FaTachometerAlt className="icon" />
+          <span class="icon-label">Dashboard</span>
+        </Link>
+        <Link href="/profile/Exams">
+          <FaClipboardList className="icon" />
+          <span class="icon-label">Exams</span>
+        </Link>
+        <Link href="/profile/register">
+          <FaUserPlus className="icon" />
+          <span class="icon-label">Register</span>
+        </Link>
+        <Link href="/profile/reports">
+          <FaFileAlt className="icon" />
+          <span class="icon-label">Reports</span>
+        </Link>
+        <Link href="/profile/payment">
+          <FaMoneyBillWave className="icon" />
+          <span class="icon-label">Payment</span>
+        </Link>
+        <div class="footer">
+          <Link href="/profile/Settings">
+            <FaCog className="icon" />
+            <span class="icon-label">Settings</span>
+          </Link>
+          <Link href="/profile/signout">
+            <FaSignOutAlt className="icon" />
+            <span class="icon-label">Sign Out</span>
+          </Link>
+        </div>
+      </div>
+      <main class="main-content">
+        <div class="settings-container">
+          <div class="settings-modal">
+            <h1 class="text-3xl font-bold text-center">Settings</h1>
+            <div class="mt-5">
+              <h2 class="text-2xl font-semibold">Profile Settings</h2>
+              <form class="mt-3">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter your username" />
+                <button type="submit" class="save-button">Save Changes</button>
+              </form>
+            </div>
+
+            <div class="mt-5">
+              <h2 class="text-2xl font-semibold">Change Password</h2>
+              <form class="mt-3">
+                <label for="current-password">Current Password:</label>
+                <input type="password" id="current-password" placeholder="Enter your current password" />
+                <label for="new-password" class="mt-3">New Password:</label>
+                <input type="password" id="new-password" placeholder="Enter your new password" />
+                <button type="submit" class="save-button">Change Password</button>
+              </form>
+            </div>
+
+            <div class="mt-5">
+              <h2 class="text-2xl font-semibold">Notification Preferences</h2>
+              <form class="mt-3">
+                <label for="email-notifications">
+                  <input type="checkbox" id="email-notifications" />
+                  Receive Email Notifications
+                </label>
+                <button type="submit" class="save-button">Save Preferences</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
