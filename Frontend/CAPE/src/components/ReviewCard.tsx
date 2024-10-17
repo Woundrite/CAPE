@@ -11,7 +11,7 @@ interface ReviewCardInterface {
 
 let ReviewCard = (props: ReviewCardInterface) => {
 	return (
-		<Card className="max-w-[340px]">
+		<Card className="max-w-80 max-h-48 w-8/12 justify-self-center align-self-center">
 			<CardHeader className="justify-between">
 				<div className="flex gap-5">
 					<Avatar isBordered radius="full" size="md" src={props.img_src} />
@@ -22,7 +22,6 @@ let ReviewCard = (props: ReviewCardInterface) => {
 			</CardHeader>
 			<CardBody className="px-3 py-0 text-small text-default-400">
 				<p>
-
 					{props.Content}
 				</p>
 			</CardBody>

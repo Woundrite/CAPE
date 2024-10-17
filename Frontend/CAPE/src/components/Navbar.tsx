@@ -37,11 +37,11 @@ const Nav = (Props: any) => {
 				<NavbarItem>
 					{Props.Active == "Resources" ? (
 						<Link color="foreground" className="hover:underline hover:font-bold font-bold decoration-2 decoration-sky-500" href="/Resources">
-							Resources
+							Reviews
 						</Link>
 					) : (
 						<Link color="foreground" className="hover:underline hover:font-bold decoration-2 decoration-sky-500" href="/Resources">
-							Resources
+							Reviews
 						</Link>
 					)}
 				</NavbarItem>
