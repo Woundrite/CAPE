@@ -22,4 +22,9 @@ urlpatterns = [
     re_path('signup', views.signup),
     re_path('login', views.login),
     re_path('test_token', views.test_token),
+    re_path('create_test', views.create_test),
+    # re_path('dump_questions', views.dump_questions),
+    # re_path('test_autogen', views.test_autogen),
+    # re_path('attempt_test', views.attempt_test),
+    # re_path('test_autogen', views.test_autogen),
 ]
