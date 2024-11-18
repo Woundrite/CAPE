@@ -13,10 +13,11 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from API.models import CustomUser, Option, Question, Exam
 import datetime
-from keras.models import load_model  # TensorFlow is required for Keras to work
 from PIL import Image, ImageOps  # Install pillow instead of PIL
 import numpy as np
-
+from API.eyedetect import *
+import base64
+from io import BytesIO
 
 @api_view(["POST"])
 def signup(request):
@@ -147,53 +148,34 @@ def create_option(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def check_image(request):
-    # Disable scientific notation for clarity
-    np.set_printoptions(suppress=True)
+    base64_string = request.data["Image"]
 
-    # Load the model
-    model = load_model("keras_Model.h5", compile=False)
+    if "data:image" in base64_string:
+        base64_string = base64_string.split(",")[1]
 
-    # Load the labels
-    class_names = open("labels.txt", "r").readlines()
+    # Decode the Base64 string into bytes
+    image_bytes = base64.b64decode(base64_string)
 
-    # Create the array of the right shape to feed into the keras model
-    # The 'length' or number of images you can put into the array is
-    # determined by the first position in the shape tuple, in this case 1
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-    # Remove any leading '0x' from the hex string
-    hex_string = request["Image"].replace("0x", "")
+    image_stream = BytesIO(image_bytes)
 
-    # Convert the hex string to bytes
-    bytes_data = bytes.fromhex(hex_string)
+    image = np.asarray(Image.open(image_stream))
 
-    # Convert bytes to a numpy array
-    array = np.frombuffer(bytes_data, dtype=np.uint8)
+    with map_face_mesh.FaceMesh(min_detection_confidence =0.5, min_tracking_confidence=0.5) as face_mesh:
+        frame = cv.resize(image, None, fx=1.5, fy=1.5, interpolation=cv.INTER_CUBIC)
+        frame_height, frame_width= frame.shape[:2]
+        rgb_frame = cv.cvtColor(frame, cv.COLOR_RGB2BGR)
+        results  = face_mesh.process(rgb_frame)
+        if results.multi_face_landmarks:
+            print("detected")
+            mesh_coords = landmarksDetection(frame, results, False)
+            right_coords = [mesh_coords[p] for p in RIGHT_EYE]
+            left_coords = [mesh_coords[p] for p in LEFT_EYE]
+            crop_right, crop_left = eyesExtractor(frame, right_coords, left_coords)
+            eye_position_right, color = positionEstimator(crop_right)
+            eye_position_left, color = positionEstimator(crop_left)
+            if eye_position_right == "CENTER" or eye_position_left == "CENTER":
+                return Response({"verdict":True, "left": eye_position_left, "right": eye_position_right})
+            else:
+                return Response({"verdict":False, "left": eye_position_left, "right": eye_position_right})
 
-    # Reshape the array into the image dimensions
-    array = array.reshape((request["size"][0], request["size"][1], 3))  # Assuming RGB image
-
-    # Create a PIL Image from the array
-    image = Image.fromarray(array).convert("RGB")
-
-    # resizing the image to be at least 224x224 and then cropping from the center
-    size = (224, 224)
-    image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
-
-    # turn the image into a numpy array
-    image_array = np.asarray(image)
-
-    # Normalize the image
-    normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
-
-    # Load the image into the array
-    data[0] = normalized_image_array
-
-    # Predicts the model
-    prediction = model.predict(data)
-    index = np.argmax(prediction)
-    class_name = class_names[index]
-    confidence_score = prediction[0][index]
-
-    # Print prediction and confidence score
-    print("Class:", class_name[2:], end="")
-    print("Confidence Score:", confidence_score)
+        return Response(False)

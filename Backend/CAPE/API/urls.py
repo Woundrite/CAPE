@@ -25,7 +25,7 @@ urlpatterns = [
     re_path('create_test', views.create_test),
     re_path('create_option', views.create_option),
     re_path('create_question', views.create_question),
-    # re_path('dump_questions', views.dump_questions),
+    re_path('test_face', views.check_image),
     # re_path('test_autogen', views.test_autogen),
     # re_path('attempt_test', views.attempt_test),
     # re_path('test_autogen', views.test_autogen),
