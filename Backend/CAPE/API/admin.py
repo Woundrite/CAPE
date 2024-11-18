@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Option, Question, ExamQuestion, QuestionOption, Exam, Attempts
+from .models import CustomUser, Option, Question, Exam, Attempts
 from .models import Creates, CUserAttempt, CUserCreate, AttemptExam, CreateExam
 
 class CustomUserAdmin(UserAdmin):
@@ -24,8 +24,6 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Option)
 admin.site.register(Question)
-admin.site.register(ExamQuestion)
-admin.site.register(QuestionOption)
 admin.site.register(Exam)
 admin.site.register(Attempts)
 admin.site.register(Creates)

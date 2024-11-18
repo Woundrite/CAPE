@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import uuid
 # Create your models here.
 class CustomUserManager(BaseUserManager):
 	def create_user(self, username, email, password=None, **extra_fields):
@@ -50,64 +51,57 @@ class CustomUser(AbstractUser):
 
 	def is_dual(self):
 		return self.user_type == 'dual'
+	
+	def get_user_type(self):
+		return self.user_type
+
+	def set_user_type(self, user_type):
+		self.user_type = user_type
+		self.save()
 
 	objects = CustomUserManager()
 
 	
 class Option(models.Model):
+	ID = models.AutoField(primary_key=True)
 	option_text = models.CharField(max_length=500)
 
 class Question(models.Model):
+	ID = models.AutoField(primary_key=True)
 	question_text = models.CharField(max_length=500)
-	question_marks = models.IntegerField()
-	question_answer = models.CharField(max_length=500)
+	question_marks_corrent = models.IntegerField()
+	question_marks_wrong = models.IntegerField()
+	question_answer = models.ManyToManyField(Option, related_name='QuestionOption')
 
 class Exam(models.Model):
-	exam_name = models.CharField(max_length=100)
-	exam_date = models.DateField()
-	exam_time = models.TimeField()
+	ID = models.UUIDField(primary_key=True, unique=True, max_length=20, editable=False, default=uuid.uuid4)
+	exam_name = models.CharField(max_length=255)
+	exam_start_date_time = models.DateTimeField()
+	exam_end_date_time = models.DateTimeField()
 	exam_duration = models.DurationField()
+	num_attempts = models.IntegerField()
 	exam_teacher = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-	exam_students = models.ManyToManyField(CustomUser)
-	exam_questions = models.ManyToManyField(Question)
+	exam_students = models.ManyToManyField(CustomUser, related_name="examStudents")
+	exam_questions = models.ManyToManyField(Question, related_name='examQuestion')
 
+# Relational Tables
 class Attempts(models.Model):
+	ID = models.AutoField(primary_key=True)
 	attempt_student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	attempt_exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
 	attempt_marks = models.IntegerField()
 	attempt_time = models.DateTimeField()
-	attempt_answers = models.ManyToManyField(Option)
 	attempt_is_submitted = models.BooleanField()
 	attempt_is_evaluated = models.BooleanField()
 	attempt_evaluated_marks = models.IntegerField()
 	attempt_evaluated_time = models.DateTimeField()
 	attempt_feedback = models.CharField(max_length=500)
-	attempt_is_reattempt = models.BooleanField()
-	attempt_reattempt_time = models.DateTimeField()
-	attempt_reattempt_answers = models.ManyToManyField(Option)
-	attempt_reattempt_is_submitted = models.BooleanField()
-	attempt_reattempt_is_evaluated = models.BooleanField()
-	attempt_reattempt_evaluated_marks = models.IntegerField()
-	attempt_reattempt_evaluated_time = models.DateTimeField()
-	attempt_reattempt_evaluated_answers = models.ManyToManyField(Option)
-	attempt_reattempt_feedback = models.CharField(max_length=500)
 
 class Creates(models.Model):
 	create_teacher = models.ManyToManyField(CustomUser)
 	create_exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
 	create_time = models.DateTimeField()
 	create_is_deleted = models.BooleanField()
-
-# Relational Tables
-class ExamQuestion(models.Model):
-	exam_question_exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
-	exam_question_question = models.ForeignKey(Question, on_delete=models.CASCADE)
-	exam_question_marks = models.IntegerField()
-
-class QuestionOption(models.Model):
-	question = models.ForeignKey(Question, on_delete=models.CASCADE)
-	option = models.ForeignKey(Option, on_delete=models.CASCADE)
-	is_correct = models.BooleanField()
 
 class CUserAttempt(models.Model):
 	user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

@@ -5,6 +5,14 @@ Content-Type: application/json
 
 ###
 
+POST http://127.0.0.1:8000/api/signup 
+Content-Type: application/json
+
+{ "username": "adam", "password": "Pass1234!", "email": "adam@mail.com", "user_type": "teacher" }
+
+
+###
+
 POST http://127.0.0.1:8000/api/login 
 Content-Type: application/json
 
@@ -14,4 +22,10 @@ Content-Type: application/json
 
 GET http://127.0.0.1:8000/api/test_token 
 Content-Type: application/json
-Authorization: Token 0345dcf00b293e13c1d9f4cc90b0311bceee1ed8
+Authorization: Token faed22e8cd08559d5772a3cc03aa3396facb8148
+
+###
+
+GET http://127.0.0.1:8000/api/create_option 
+Content-Type: application/json
+Authorization: Token faed22e8cd08559d5772a3cc03aa3396facb8148
