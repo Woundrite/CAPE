@@ -10,6 +10,7 @@ export type UserSettingsType = {
 	authtoken: string,
 	apiroot: "http://localhost:8000/api/",
 	email: string,
+	type: "student" | "teacher" | "dual" | ""
 }
 
 export const userSettings = persistentMap<UserSettingsType>('userSettings', {
@@ -18,4 +19,5 @@ export const userSettings = persistentMap<UserSettingsType>('userSettings', {
 	authtoken: "",
 	apiroot: "http://localhost:8000/api/",
 	email: "",
+	type: ""
 })

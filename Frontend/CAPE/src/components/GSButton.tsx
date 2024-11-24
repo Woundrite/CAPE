@@ -43,7 +43,7 @@ const GSButton = () => {
 
 	const closeButton = (
 		<button role="button" aria-label="Close" className="absolute appearance-none select-none top-1 right-1 rtl:left-1 rtl:right-[unset] p-2 text-foreground-500 rounded-full hover:bg-default-100 active:bg-default-200 tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2" type="button">
-			<svg aria-hidden="true" fill="none" onClick={closeRegister} focusable="false" height="1em" role="presentation" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="1em">
+			<svg aria-hidden="true" fill="none" onClick={closeRegister} focusable="false" height="1em" role="presentation" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="1em">
 				<path d="M18 6L6 18M6 6l12 12">
 				</path>
 			</svg>
@@ -83,8 +83,9 @@ const GSButton = () => {
 				userSettings.setKey("authtoken", result.token);
 				userSettings.setKey("username", username);
 				userSettings.setKey("email", email);
+				userSettings.setKey("type", result.user_type);
 			})
-			.catch(error => console.log('error', error));
+			.catch(error => toast.error('error', error));
 		closeRegister();
 		toast.success("Registered Sucessfully")
 	}

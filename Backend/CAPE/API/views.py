@@ -19,19 +19,29 @@ from API.eyedetect import *
 import base64
 from io import BytesIO
 
+
 @api_view(["POST"])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     usr = CustomUser.objects.filter(username=request.data["username"])
     if len(usr) == 1:
         usr = usr[0]
+        token, created = Token.objects.get_or_create(user=usr)
         if usr.get_user_type() == request.data["user_type"]:
             return Response(
                 {"detail": "User already exists."}, status=status.HTTP_400_BAD_REQUEST
             )
         else:
             usr.set_user_type("dual")
-            return Response({"detail": "User is now both a student and teacher"})
+            usr.save()
+            return Response(
+                {
+                    "token": token.key,
+                    "username": usr.username,
+                    "user_type": usr.get_user_type(),
+                    "email": usr.email,
+                }
+            )
     else:
         if serializer.is_valid():
             serializer.save()
@@ -39,7 +49,14 @@ def signup(request):
             user.set_password(request.data["password"])
             user.save()
             token = Token.objects.create(user=user)
-            return Response({"token": token.key, "user": serializer.data})
+            return Response(
+                {
+                    "token": token.key,
+                    "username": usr.username,
+                    "user_type": usr.get_user_type(),
+                    "email": usr.email,
+                }
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -50,26 +67,47 @@ def login(request):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
+    print(serializer.data)
     return Response({"token": token.key, "user": serializer.data})
 
 
-@api_view(["GET"])
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def signout(request):
+    request.user.auth_token.delete()
+    return Response({"detail": "Logged out."}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
-    perm = request["permission"]
-    user_permissions = {"student": ["attempt_test", "profile", "view_test", "view_result"], "teacher": ["attempt_test", "profile", "view_test", "view_result", "create_test", "edit_test", "delete_test"]}
+    perm = request.data["permission"]
+    user_permissions = {
+        "student": ["attempt_test", "profile", "view_test", "view_result"],
+        "teacher": [
+            "attempt_test",
+            "profile",
+            "view_test",
+            "view_result",
+            "create_test",
+            "edit_test",
+            "delete_test",
+        ],
+    }
     if request.user.user_type == "student":
         if perm in user_permissions["student"]:
-            return Response({"status": "passed", "user": request.user})
+            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
     elif request.user.user_type == "teacher":
         if perm in user_permissions["teacher"]:
-            return Response({"status": "passed", "user": request.user})
+            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
     elif request.user.user_type == "dual":
         if perm in user_permissions["student"] or perm in user_permissions["teacher"]:
-            return Response({"status": "passed", "user": request.user})
-        
-    return Response({"status": "failed", "user": request.user})
+            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+
+    return Response({"status": "failed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -170,11 +208,13 @@ def check_image(request):
 
     image = np.asarray(Image.open(image_stream))
 
-    with map_face_mesh.FaceMesh(min_detection_confidence =0.5, min_tracking_confidence=0.5) as face_mesh:
+    with map_face_mesh.FaceMesh(
+        min_detection_confidence=0.5, min_tracking_confidence=0.5
+    ) as face_mesh:
         frame = cv.resize(image, None, fx=1.5, fy=1.5, interpolation=cv.INTER_CUBIC)
-        frame_height, frame_width= frame.shape[:2]
+        frame_height, frame_width = frame.shape[:2]
         rgb_frame = cv.cvtColor(frame, cv.COLOR_RGB2BGR)
-        results  = face_mesh.process(rgb_frame)
+        results = face_mesh.process(rgb_frame)
         if results.multi_face_landmarks:
             print("detected")
             mesh_coords = landmarksDetection(frame, results, False)
@@ -184,8 +224,20 @@ def check_image(request):
             eye_position_right, color = positionEstimator(crop_right)
             eye_position_left, color = positionEstimator(crop_left)
             if eye_position_right == "CENTER" or eye_position_left == "CENTER":
-                return Response({"verdict":True, "left": eye_position_left, "right": eye_position_right})
+                return Response(
+                    {
+                        "verdict": True,
+                        "left": eye_position_left,
+                        "right": eye_position_right,
+                    }
+                )
             else:
-                return Response({"verdict":False, "left": eye_position_left, "right": eye_position_right})
+                return Response(
+                    {
+                        "verdict": False,
+                        "left": eye_position_left,
+                        "right": eye_position_right,
+                    }
+                )
 
         return Response(False)

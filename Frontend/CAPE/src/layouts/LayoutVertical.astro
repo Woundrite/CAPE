@@ -13,8 +13,6 @@ import {
   FaBookOpen,
 } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-import { userSettings } from "../store.ts";
-import { useStore } from "@nanostores/react";
 ---
 
 <html lang="en">
@@ -23,10 +21,9 @@ import { useStore } from "@nanostores/react";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <script>
-      const settings = useStore(userSettings);
       let header = new Headers({
         "Content-Type": "application/json",
-        Authorization: "Token " + settings.authtoken,
+        Authorization: "Token " + localStorage.userSettingsauthtoken,
         "Access-Control-Allow-Origin": "http://localhost:8000",
         "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
         "Access-Control-Allow-Headers":
@@ -34,21 +31,25 @@ import { useStore } from "@nanostores/react";
       });
 
       let reqOpts = {
-        method: "GET",
+        method: "POST",
         headers: header,
         body: JSON.stringify({
-          "permission": "profile"
+          permission: "profile",
         }),
       };
 
-      fetch(settings.apiroot + "login", reqOpts)
+      fetch(localStorage.userSettingsapiroot + "test_token", reqOpts)
         .then((response) => response.json())
         .then((result) => {
-          if(result.status == "failed"){
-            window.location = "/";
+          if (result.status == "failed") {
+            console.log(result);
+            // window.location = "/";
           }
         })
-        .catch((error) => {window.location = "/";});
+        .catch((error) => {
+          console.log(error)
+          // window.location = "/";
+        });
     </script>
     <ViewTransitions />
     <style>
