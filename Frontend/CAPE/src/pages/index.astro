@@ -7,149 +7,155 @@ import HLI from "@components/HomepageLandingSite.png?raw";
 ---
 
 <Layout title="CAPE">
-	<main>
-		<Nav client:load Active="Home" />
-		<!-- <Button color="primary" client:visible></Button> -->
-		<div class="w-100 h-screen bg-gray-100 grid-cols-2 grid">
-			<div class="h-screen grid content-center justify-center gap-6">
-				<div>
-					<h1 class="font-bold text-5xl">Take Online</h1>
-					<h1 class="font-bold text-5xl">Exam.</h1>
-				</div>
-				<div class="grid grid-rows-2 gap-3">
-					<h1 class="font-bold text-xl">
-						Test Takers Active Right Now
-					</h1>
-					<h3 class="font-bold text-l text-purple">200+</h3>
-				</div>
-			</div>
-			<div class="h-screen content-center justify-start">
-				<Fragment set:html={HLI} />
-			</div>
-		</div>
-		<div class="w-100 h-screen bg-blue-500 grid grid-cols-3 gap-2 py-5">
-			<div class="grid-1 grid content-end justify-end 2xl:justify-center">
-				<div
-					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
-				>
-				</div>
-			</div>
-			<div class="grid-1 grid content-center justify-center">
-				<div
-					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
-				>
-				</div>
-			</div>
-			<div class="grid-1 grid content-start justify-start">
-				<div
-					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
-				>
-				</div>
-			</div>
-		</div>
-		<div
-			class="w-svw h-screen bg-gray-200 grid grid-rows-[min-content_auto] gap-4 py-5"
-		>
-			<div class="grid-1 text-4xl font-bold px-10 items-center">
-				What others say about us
-			</div>
-			<div class="grid grid-rows-2">
-				<div class="grid grid-cols-3 gap-5 p-5">
-					<ReviewCard
-						img_src=""
-						Name="Vivek"
-						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
-					/>
-					<ReviewCard
-						img_src=""
-						Name="Rupa"
-						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
-					/>
-					<ReviewCard
-						img_src=""
-						Name="Ravi"
-						Content="Amet consectetur duis tempor in culpa id."
-					/>
-				</div>
-				<div class="grid grid-cols-2 gap-5 p-5 justify-center">
-					<ReviewCard
-						img_src=""
-						Name="Vivek"
-						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
-					/>
-					<ReviewCard
-						img_src=""
-						Name="Rupa"
-						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
-					/>
-				</div>
-			</div>
-		</div>
-		<div
-			class="w-full h-screen grid grid-rows-[min-content_auto] p-10"
-			id="About"
-		>
-			<p class="text-4xl">About Us</p>
-			<div class="grid grid-cols-[6fr_4fr]">
-				<div class="grid grid-rows-5 py-5 gap-3">
-					<div class="grid grid-cols-[1fr_3fr] gap-2">
-						<div class="bg-gray-200"></div>
-						<div class="">
-							<h1 class="text-2xl font-bold">Name</h1>
-							<p>
-								lorem ipsum dolor sit amet, consectetur
-								adipiscing
-							</p>
-						</div>
-					</div>
-					<div class="grid grid-cols-[1fr_3fr] gap-2">
-						<div class="bg-gray-200"></div>
-						<div class="">
-							<h1 class="text-2xl font-bold">Name</h1>
-							<p>
-								lorem ipsum dolor sit amet, consectetur
-								adipiscing
-							</p>
-						</div>
-					</div>
-					<div class="grid grid-cols-[1fr_3fr] gap-2">
-						<div class="bg-gray-200"></div>
-						<div class="">
-							<h1 class="text-2xl font-bold">Name</h1>
-							<p>
-								lorem ipsum dolor sit amet, consectetur
-								adipiscing
-							</p>
-						</div>
-					</div>
-					<div class="grid grid-cols-[1fr_3fr] gap-2">
-						<div class="bg-gray-200"></div>
-						<div class="">
-							<h1 class="text-2xl font-bold">Name</h1>
-							<p>
-								lorem ipsum dolor sit amet, consectetur
-								adipiscing
-							</p>
-						</div>
-					</div>
-					<div class="grid grid-cols-[1fr_3fr] gap-2">
-						<div class="bg-gray-200"></div>
-						<div class="">
-							<h1 class="text-2xl font-bold">Name</h1>
-							<p>
-								lorem ipsum dolor sit amet, consectetur
-								adipiscing
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="grid grid-rows-2">
-					<div class="bg-gray-200"></div>
-					<div class="bg-gray-100"></div>
-				</div>
-			</div>
-		</div>
-		<Footer />
-	</main>
-	
+  <main>
+    <!-- Import AOS scripts -->
+    <script is:inline src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script is:inline type="module">
+      AOS.init();
+    </script>
+
+    <!-- Navigation -->
+    <Nav client:load Active="Home" />
+
+    <!-- Hero Section -->
+    <div class="relative w-full h-screen bg-gradient-to-b from-gray-100 to-gray-200 grid grid-cols-2">
+      <div class="h-screen flex flex-col justify-center items-center gap-6">
+        <div class="text-center">
+          <h1 class="font-extrabold text-6xl text-gray-800">Take Online</h1>
+          <h1 class="font-extrabold text-6xl text-blue-500">Exam.</h1>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <h2 class="font-bold text-xl text-gray-700">Test Takers Active Right Now</h2>
+          <h3 class="font-bold text-2xl text-purple-600">200+</h3>
+        </div>
+      </div>
+      <div class="h-screen flex justify-center items-center">
+        <img src={HLI} alt="Landing Image" class="rounded-lg shadow-lg animate-fade-in" />
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="w-full py-20 bg-gray-100" data-aos="fade-up">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-extrabold text-gray-800">Why Choose CAPE?</h2>
+        <p class="text-lg text-gray-600 mt-3">
+          Discover how CAPE makes online examinations simple, secure, and effective.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto px-6">
+        <!-- Feature 1 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/secure.svg" alt="Secure" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">Highly Secure</h3>
+          <p class="text-gray-600">
+            Advanced security protocols ensure the integrity of your examinations.
+          </p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/user-friendly.svg" alt="User-Friendly" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">User-Friendly</h3>
+          <p class="text-gray-600">
+            Designed for ease of use, CAPE works seamlessly for all users.
+          </p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/analytics.svg" alt="Analytics" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">Detailed Analytics</h3>
+          <p class="text-gray-600">
+            Get comprehensive reports and insights to analyze performance.
+          </p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/real-time.svg" alt="Real-Time" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">Real-Time Monitoring</h3>
+          <p class="text-gray-600">
+            Monitor tests in real time to maintain transparency and trust.
+          </p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/customizable.svg" alt="Customizable" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">Customizable Tests</h3>
+          <p class="text-gray-600">
+            Adapt tests to suit your needs with flexible settings and options.
+          </p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg" data-aos="zoom-in">
+          <img src="/icons/support.svg" alt="Support" class="w-16 h-16" />
+          <h3 class="text-xl font-bold text-gray-700">24/7 Support</h3>
+          <p class="text-gray-600">
+            Our dedicated support team is here to assist you at any time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Section (Updated to Left-Aligned) -->
+    <div class="w-full h-[60vh] bg-blue-500 py-10 relative">
+      <div class="text-left pl-6 mb-6">
+        <h2 class="text-4xl font-extrabold text-white">What Others Say About Us</h2>
+      </div>
+      <div id="review-slider" class="relative max-w-4xl mx-auto">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+          <div class="flex transition-transform duration-1000 ease-linear animate-slider">
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                class="flex-none w-full h-60 bg-white rounded-lg shadow-lg p-4 mx-2"
+              >
+                <ReviewCard
+                  img_src=""
+                  Name={`User ${i + 1}`}
+                  Content={`This is an awesome platform for online exams! Review ${i + 1}.`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Creator Section (Updated to Left-Aligned) -->
+    <div class="relative w-full py-16 bg-gray-300" id="About" data-aos="fade-up">
+      <div class="text-left pl-6 mb-8">
+        <h2 class="text-4xl font-extrabold">Meet The Creators</h2>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-[6fr_4fr] gap-8 px-10">
+        <div class="grid grid-rows-5 gap-8">
+          {[
+            {"name": "Ritik Mishra", "email": "ritik.23bce@vitbhopal.ac.in", "id": "23BCE10850"},
+            {"name": "Nikhil Bendale", "email": "nikhil.23bce10985@vitbhopal.ac.in", "id": "23BCE10985"},
+            {"name": "Krish Gursahani", "email": "krish.23bce11703@vitbhopal.ac.in", "id": "23BCE11703"},
+            {"name": "Siddharth Maurya", "email": "siddharth.23bce11797@vitbhopal.ac.in", "id": "23BCE11797"},
+            {"name": "Gaurav Bansod", "email": "gaurav23bce11487@vitbhopal.ac.in", "id": "23BCE11487"}
+          ].map((creator, i) => (
+            <div key={i} class="flex items-center gap-8">
+              <div class="w-48 h-48 bg-gray-200 rounded-full"></div>
+              <div>
+                <h3 class="text-xl font-bold">{creator.name}</h3>
+                <p>{creator.email}</p>
+                <p>{creator.id}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="h-96 bg-gray-400 rounded-lg shadow-lg"></div>
+          <div class="h-96 bg-gray-300 rounded-lg shadow-lg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full bg-blue-500 py-8">
+      <div class="text-center text-white">
+        <p>&copy; 2024 CAPE. All Rights Reserved.</p>
+      </div>
+    </footer>
+  </main>
 </Layout>
