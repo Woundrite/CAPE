@@ -73,7 +73,7 @@ const Nav = (Props: any) => {
 				loggedin ? (
 					<Dropdown placement="bottom-end">
 						<DropdownTrigger>
-							<Avatar showFallback src={'https://ui-avatars.com/api/?background=random?name=' + settings.username} />
+							<Avatar showFallback src={'https://ui-avatars.com/api/?background=random&name=' + settings.username} />
 						</DropdownTrigger>
 						<DropdownMenu aria-label="Profile Actions" variant="flat">
 							<DropdownItem key="profile" className="h-14 gap-2">
@@ -88,10 +88,6 @@ const Nav = (Props: any) => {
 								Analytics
 							</DropdownItem>
 							<DropdownItem key="system">System</DropdownItem>
-							<DropdownItem key="configurations">Configurations</DropdownItem>
-							<DropdownItem key="help_and_feedback">
-								Help & Feedback
-							</DropdownItem>
 							<DropdownItem key="logout" color="danger" as={Link} href="/signout" className="text-black">
 								Log Out
 							</DropdownItem>

@@ -54,9 +54,11 @@ const LoginButton = () => {
 		fetch(settings.apiroot + "login", reqOpts)
 			.then(response => response.json())
 			.then(result => {
-				userSettings.setKey("authtoken" ,result.token);
+				userSettings.setKey("authtoken", result.token);
 				userSettings.setKey("username", result.user.username);
-				userSettings.setKey("email" ,result.user.email);
+				console.log("result", result)
+				userSettings.setKey("email", result.user.email);
+				userSettings.setKey("type", result.user.user_type);
 			})
 			.catch(error => console.log('error', error));
 		closeLogin();
