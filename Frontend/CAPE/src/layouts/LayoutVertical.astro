@@ -70,7 +70,6 @@ import { useStore } from "@nanostores/react";
         align-items: center; /* Center items horizontally */
       }
       .cape-header {
-        background: rgba(173, 216, 230, 0.7); /* Light shade of blue */
         padding: 15px; /* Padding for the header */
         width: 80%; /* Rectangle width */
         border-radius: 15px; /* Rounded corners */
@@ -123,6 +122,12 @@ import { useStore } from "@nanostores/react";
         margin-bottom: 0.7cm; /* Space from bottom */
         text-align: center; /* Center the footer */
       }
+      .logo {
+        width: 40px; /* Adjust logo size */
+        height: 40px; /* Adjust logo size */
+        border-radius: 50%; /* Make logo circular */
+        margin-right: 10px;
+      }
     </style>
   </head>
   <body>
@@ -130,9 +135,8 @@ import { useStore } from "@nanostores/react";
       <div><Toaster /></div>
       <div class="sidebar">
         <div class="cape-header">
-          <FaBookOpen className="cape-icon" />
-          <!-- CAPE Icon -->
-          CAPE
+          <img src="/path/to/logo.png" alt="CAPE Logo" class="logo" />
+          <span style="color: black; font-size: 30px; font-weight: bold;">CAPE</span>
         </div>
         <!-- New CAPE section -->
         <Link href="/profile/dashboard">
@@ -143,15 +147,15 @@ import { useStore } from "@nanostores/react";
           <FaClipboardList className="icon" />
           <span class="icon-label">Exams</span>
         </Link>
-        <Link href="/profile/register">
+        <Link href="/profile/Create_exam">
           <FaUserPlus className="icon" />
-          <span class="icon-label">Register</span>
+          <span class="icon-label">Create Exam</span>
         </Link>
         <Link href="/profile/reports">
           <FaFileAlt className="icon" />
           <span class="icon-label">Reports</span>
         </Link>
-        <Link href="/profile/payment">
+        <Link href="/profile/payments">
           <FaMoneyBillWave className="icon" />
           <span class="icon-label">Payment</span>
         </Link>
