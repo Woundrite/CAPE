@@ -2,7 +2,19 @@
 const { title } = Astro.props;
 import { ViewTransitions } from "astro:transitions";
 import { Link } from "@nextui-org/react";
-import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaFileAlt, FaMoneyBillWave, FaCog, FaSignOutAlt, FaBookOpen } from 'react-icons/fa'; // Added an icon for CAPE
+import {
+  FaTachometerAlt,
+  FaClipboardList,
+  FaUserPlus,
+  FaFileAlt,
+  FaMoneyBillWave,
+  FaCog,
+  FaSignOutAlt,
+  FaBookOpen,
+} from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
+import { userSettings } from "../store.ts";
+import { useStore } from "@nanostores/react";
 ---
 
 <html lang="en">
@@ -10,6 +22,34 @@ import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaFileAlt, FaMoneyBillWav
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <script>
+      const settings = useStore(userSettings);
+      let header = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Token " + settings.authtoken,
+        "Access-Control-Allow-Origin": "http://localhost:8000",
+        "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+        "Access-Control-Allow-Headers":
+          "Origin, X-Requested-With, Content-Type, Accept",
+      });
+
+      let reqOpts = {
+        method: "GET",
+        headers: header,
+        body: JSON.stringify({
+          "permission": "profile"
+        }),
+      };
+
+      fetch(settings.apiroot + "login", reqOpts)
+        .then((response) => response.json())
+        .then((result) => {
+          if(result.status == "failed"){
+            window.location = "/";
+          }
+        })
+        .catch((error) => {window.location = "/";});
+    </script>
     <ViewTransitions />
     <style>
       body {
@@ -87,11 +127,14 @@ import { FaTachometerAlt, FaClipboardList, FaUserPlus, FaFileAlt, FaMoneyBillWav
   </head>
   <body>
     <div>
+      <div><Toaster /></div>
       <div class="sidebar">
         <div class="cape-header">
-          <FaBookOpen className="cape-icon" /> <!-- CAPE Icon -->
+          <FaBookOpen className="cape-icon" />
+          <!-- CAPE Icon -->
           CAPE
-        </div> <!-- New CAPE section -->
+        </div>
+        <!-- New CAPE section -->
         <Link href="/profile/dashboard">
           <FaTachometerAlt className="icon" />
           <span class="icon-label">Dashboard</span>

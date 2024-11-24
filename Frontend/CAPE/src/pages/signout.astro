@@ -1,0 +1,162 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Nav from "@components/Navbar.tsx";
+import Footer from "@components/Footer.tsx";
+import ReviewCard from "@components/ReviewCard.tsx";
+import HLI from "@components/HomepageLandingSite.png?raw";
+import { userSettings } from "../store.ts";
+---
+
+<Layout title="CAPE">
+	<script>
+		localStorage.userSettingsauthtoken = "";
+		localStorage.userSettingsusername = "";
+		localStorage.userSettingspasshash = "";
+		localStorage.userSettingsemail = "";
+		window.location = "/";
+	</script>
+	<main>
+		<Nav client:load Active="Home" />
+		<!-- <Button color="primary" client:visible></Button> -->
+		<div class="w-100 h-screen bg-gray-100 grid-cols-2 grid">
+			<div class="h-screen grid content-center justify-center gap-6">
+				<div>
+					<h1 class="font-bold text-5xl">Take Online</h1>
+					<h1 class="font-bold text-5xl">Exam.</h1>
+				</div>
+				<div class="grid grid-rows-2 gap-3">
+					<h1 class="font-bold text-xl">
+						Test Takers Active Right Now
+					</h1>
+					<h3 class="font-bold text-l text-purple">200+</h3>
+				</div>
+			</div>
+			<div class="h-screen content-center justify-start">
+				<Fragment set:html={HLI} />
+			</div>
+		</div>
+		<div class="w-100 h-screen bg-blue-500 grid grid-cols-3 gap-2 py-5">
+			<div class="grid-1 grid content-end justify-end 2xl:justify-center">
+				<div
+					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
+				>
+				</div>
+			</div>
+			<div class="grid-1 grid content-center justify-center">
+				<div
+					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
+				>
+				</div>
+			</div>
+			<div class="grid-1 grid content-start justify-start">
+				<div
+					class="max-w-80 w-[20svw] 2xl:w-[30svw] h-80 2xl:h-98 bg-white rounded"
+				>
+				</div>
+			</div>
+		</div>
+		<div
+			class="w-svw h-screen bg-gray-200 grid grid-rows-[min-content_auto] gap-4 py-5"
+		>
+			<div class="grid-1 text-4xl font-bold px-10 items-center">
+				What others say about us
+			</div>
+			<div class="grid grid-rows-2">
+				<div class="grid grid-cols-3 gap-5 p-5">
+					<ReviewCard
+						img_src=""
+						Name="Vivek"
+						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Rupa"
+						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Ravi"
+						Content="Amet consectetur duis tempor in culpa id."
+					/>
+				</div>
+				<div class="grid grid-cols-2 gap-5 p-5 justify-center">
+					<ReviewCard
+						img_src=""
+						Name="Vivek"
+						Content="Anim minim anim Lorem et aliquip adipisicing voluptate voluptate duis est sit."
+					/>
+					<ReviewCard
+						img_src=""
+						Name="Rupa"
+						Content="Aute aute minim pariatur laboris pariatur laboris laboris tempor."
+					/>
+				</div>
+			</div>
+		</div>
+		<div
+			class="w-full h-screen grid grid-rows-[min-content_auto] p-10"
+			id="About"
+		>
+			<p class="text-4xl">About Us</p>
+			<div class="grid grid-cols-[6fr_4fr]">
+				<div class="grid grid-rows-5 py-5 gap-3">
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-[1fr_3fr] gap-2">
+						<div class="bg-gray-200"></div>
+						<div class="">
+							<h1 class="text-2xl font-bold">Name</h1>
+							<p>
+								lorem ipsum dolor sit amet, consectetur
+								adipiscing
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="grid grid-rows-2">
+					<div class="bg-gray-200"></div>
+					<div class="bg-gray-100"></div>
+				</div>
+			</div>
+		</div>
+		<Footer />
+	</main>
+</Layout>

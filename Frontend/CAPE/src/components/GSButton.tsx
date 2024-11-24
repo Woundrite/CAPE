@@ -1,15 +1,24 @@
 'use client'
 import { Button, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, NavbarItem, useDisclosure } from "@nextui-org/react";
-import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import { Input, Link } from "@nextui-org/react";
 import { EyeFilledIcon } from "./EyeFilledIcon.tsx";
 import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon.tsx";
 import { useState } from "react";
 import { isLoginOpen, isRegisterOpen } from "../store.js";
+import { userSettings } from '../store.ts';
+import { useStore } from '@nanostores/react'
+import toast, { Toaster } from 'react-hot-toast';
+import { Checkbox } from "@nextui-org/react";
 
 const GSButton = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isVisible, setIsVisible] = useState(false);
+	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState("");
+	const [email, setEmail] = useState("");
+	const [passwordRe, setPasswordRe] = useState("");
+	const settings = useStore(userSettings);
+	const [isTeacher, setIsTeacher] = useState(false);
 
 	isRegisterOpen.subscribe(open => {
 		if (open && !isOpen) {
@@ -43,124 +52,111 @@ const GSButton = () => {
 
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
+	const Register = () => {
+		if (password !== passwordRe) {
+			toast.error("Passwords do not match");
+			return;
+		}
+
+		let header = new Headers({
+			"Content-Type": "application/json",
+			"Authorization": "Token " + settings.authtoken,
+			'Access-Control-Allow-Origin': 'http://localhost:8000',
+			'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+			'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+		});
+
+		let reqOpts = {
+			method: "POST",
+			headers: header,
+			body: JSON.stringify({
+				"username": username,
+				"password": password,
+				"user_type": isTeacher ? "teacher" : "student",
+				"email": email
+			})
+		}
+
+		fetch(settings.apiroot + "signup", reqOpts)
+			.then(response => response.json())
+			.then(result => {
+				userSettings.setKey("authtoken", result.token);
+				userSettings.setKey("username", username);
+				userSettings.setKey("email", email);
+			})
+			.catch(error => console.log('error', error));
+		closeRegister();
+		toast.success("Registered Sucessfully")
+	}
+
 	return (
 		<NavbarItem className="">
 			<Button onPress={openRegister} color="primary" className="color-white" href="#" variant="flat">
 				Getting Started
 			</Button>
-			<Modal backdrop="blur" isKeyboardDismissDisabled shouldBlockScroll isOpen={isOpen} onOpenChange={onOpenChange} closeButton={closeButton }>
+			<Modal backdrop="blur" isKeyboardDismissDisabled shouldBlockScroll isOpen={isOpen} onOpenChange={onOpenChange} closeButton={closeButton}>
 				<ModalContent>
 					{(onClose) => (
 						< div className="py-4" >
-							<ModalHeader className="flex flex-col gap-1 text-3xl font-bold text-center">Sign Up</ModalHeader>
+							<ModalHeader className="flex flex-col gap-1 text-3xl font-bold text-center">
+								Sign Up
+							</ModalHeader>
+
 							<ModalBody className="justify-center">
-								<Tabs aria-label="Signup Options" variant="underlined" className="grid justify-center">
-									<Tab key="Student" title="Student" className="grid">
-										<div className="w-3/4 grid gap-2 justify-self-center">
-											<Divider />
-											<form action="" className="w-full grid gap-2 justify-self-center">
-												<Input type="text" label="Name" className="max-w-xs border-2 rounded-2xl" />
-												<Input type="email" label="Email" className="max-w-xs border-2 rounded-2xl" />
-												<Input
-													label="Password"
-													endContent={
-														<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-															{isVisible ? (
-																<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															) : (
-																<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															)}
-														</button>
-													}
-													type={isVisible ? "text" : "password"}
-													className="max-w-xs border-2 rounded-2xl"
-												/>
-												<Input
-													label="Re-Enter Password"
-													endContent={
-														<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-															{isVisible ? (
-																<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															) : (
-																<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															)}
-														</button>
-													}
-													type={isVisible ? "text" : "password"}
-													className="max-w-xs border-2 rounded-2xl"
-												/>
-												<Button onPress={onOpen} color="primary" className="color-white" href="#">
-													Register
-												</Button>
-											</form>
-										</div>
-										<div className="font-medium text-sm justify-self-center pt-3">
-											Already have an account? <Link onClick={switchToLogin} color="foreground" className="hover:underline text-sm font-bold decoration-2 decoration-sky-500" href="#">
-												Sign In
-											</Link>
-										</div>
-										<div className="relative flex py-5 items-center">
-											<div className="flex-grow border-t border-gray-900"></div>
-											<span className="flex-shrink mx-2 font-bold text-gray-900">or</span>
-											<div className="flex-grow border-t border-gray-900"></div>
-										</div>
-										<div className="w-full grid grid-cols-3"></div>
-									</Tab>
-									<Tab key="Teacher" title="Teacher" className="grid">
-										<div className="w-3/4 grid gap-2 justify-self-center">
-											<Divider />
-											<form action="" className="w-full grid gap-2 justify-self-center">
-												<Input type="text" label="Name" className="max-w-xs border-2 rounded-2xl" />
-												<Input type="email" label="Email" className="max-w-xs border-2 rounded-2xl" />
-												<Input
-													label="Password"
-													endContent={
-														<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-															{isVisible ? (
-																<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															) : (
-																<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															)}
-														</button>
-													}
-													type={isVisible ? "text" : "password"}
-													className="max-w-xs border-2 rounded-2xl"
-												/>
-												<Input
-													label="Re-Enter Password"
-													endContent={
-														<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-															{isVisible ? (
-																<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															) : (
-																<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-															)}
-														</button>
-													}
-													type={isVisible ? "text" : "password"}
-													className="max-w-xs border-2 rounded-2xl"
-												/>
-												<Button onPress={onOpen} color="primary" className="color-white" href="#">
-													Register
-												</Button>
-											</form>
-										</div>
-										<div className="font-medium text-sm justify-self-center pt-3">
-											Already have an account? <Link onClick={switchToLogin} color="foreground" className="hover:underline text-sm font-bold decoration-2 decoration-sky-500" href="#">
-												Sign In
-											</Link>
-										</div>
-										<div className="relative flex py-5 items-center">
-											<div className="flex-grow border-t border-gray-900"></div>
-											<span className="flex-shrink mx-2 font-bold text-gray-900">or</span>
-											<div className="flex-grow border-t border-gray-900"></div>
-										</div>
-										<div className="w-full grid grid-cols-3"></div>
-									</Tab>
-								</Tabs>
+								<div className="grid justify-self-center justify-center">
+									<div className="grid gap-2 justify-self-center">
+										<form action="" className="w-full grid gap-2 justify-self-center">
+											<Input type="text" label="Username" onChange={(event) => { setUsername(event.target.value) }} className="max-w-xs border-2 rounded-2xl" />
+											<Input type="email" label="Email" onChange={(event) => { setEmail(event.target.value) }} className="max-w-xs border-2 rounded-2xl" />
+											<Input
+												label="Password"
+												onChange={(event) => { setPassword(event.target.value) }}
+												endContent={
+													<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+														{isVisible ? (
+															<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+														) : (
+															<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+														)}
+													</button>
+												}
+												type={isVisible ? "text" : "password"}
+												className="max-w-xs border-2 rounded-2xl"
+											/>
+											<Input
+												label="Re-Enter Password"
+												onChange={(event) => { setPasswordRe(event.target.value) }}
+												endContent={
+													<button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+														{isVisible ? (
+															<EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+														) : (
+															<EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+														)}
+													</button>
+												}
+												type={isVisible ? "text" : "password"}
+												className="max-w-xs border-2 rounded-2xl"
+											/>
+											<div className="space-x-1 grid grid-cols-[auto_1fr]"><p className="font-semibold">Teacher?</p><Checkbox isSelected={isTeacher} onValueChange={setIsTeacher} radius="md" /></div>
+											<Button onPress={Register} color="primary" className="color-white" href="#">
+												Register
+											</Button>
+										</form>
+									</div>
+									<div className="font-medium text-sm justify-self-center pt-3">
+										Already have an account? <Link onClick={switchToLogin} color="foreground" className="hover:underline text-sm font-bold decoration-2 decoration-sky-500" href="#">
+											Sign In
+										</Link>
+									</div>
+									<div className="relative flex py-5 items-center">
+										<div className="flex-grow border-t border-gray-900"></div>
+										<span className="flex-shrink mx-2 font-bold text-gray-900">or</span>
+										<div className="flex-grow border-t border-gray-900"></div>
+									</div>
+									<div className="w-full grid grid-cols-3"></div>
+								</div>
 							</ModalBody>
-							<ModalFooter>
-							</ModalFooter>
 						</div>
 					)}
 				</ModalContent>

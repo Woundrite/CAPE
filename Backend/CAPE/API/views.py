@@ -57,9 +57,19 @@ def login(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
-    # request.user.email
-    return Response("passed for {}".format(request.user.email))
-
+    perm = request["permission"]
+    user_permissions = {"student": ["attempt_test", "profile", "view_test", "view_result"], "teacher": ["attempt_test", "profile", "view_test", "view_result", "create_test", "edit_test", "delete_test"]}
+    if request.user.user_type == "student":
+        if perm in user_permissions["student"]:
+            return Response({"status": "passed", "user": request.user})
+    elif request.user.user_type == "teacher":
+        if perm in user_permissions["teacher"]:
+            return Response({"status": "passed", "user": request.user})
+    elif request.user.user_type == "dual":
+        if perm in user_permissions["student"] or perm in user_permissions["teacher"]:
+            return Response({"status": "passed", "user": request.user})
+        
+    return Response({"status": "failed", "user": request.user})
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
