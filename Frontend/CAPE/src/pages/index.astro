@@ -94,68 +94,264 @@ import HLI from "@components/HomepageLandingSite.png?raw";
         </div>
       </div>
     </div>
+    <!-- Review Section -->
+<div class="w-full h-[38rem] py-12 bg-blue-500 relative overflow-hidden">
+  <div class="text-center mb-4">
+    <h2 class="text-4xl font-extrabold text-white">What Others Say About Us</h2>
+  </div>
+  <div id="review-slider" class="relative max-w-full mx-auto overflow-hidden bg-white rounded-lg shadow-lg">
+    <!-- Left Arrow -->
+    <button
+      id="left-arrow"
+      class="absolute left-2 top-1/2 transform -translate-y-1/2 p-4 text-white bg-gray-700 rounded-full z-10"
+      aria-label="Previous"
+    >
+      &#8592;
+    </button>
 
-    <!-- Review Section (Updated to Left-Aligned) -->
-    <div class="w-full h-[60vh] bg-blue-500 py-10 relative">
-      <div class="text-left pl-6 mb-6">
-        <h2 class="text-4xl font-extrabold text-white">What Others Say About Us</h2>
-      </div>
-      <div id="review-slider" class="relative max-w-4xl mx-auto">
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
-          <div class="flex transition-transform duration-1000 ease-linear animate-slider">
-            {[...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                class="flex-none w-full h-60 bg-white rounded-lg shadow-lg p-4 mx-2"
-              >
-                <ReviewCard
-                  img_src=""
-                  Name={`User ${i + 1}`}
-                  Content={`This is an awesome platform for online exams! Review ${i + 1}.`}
-                />
-              </div>
-            ))}
+    <!-- Slider Container -->
+    <div
+      class="slider-container flex transition-transform duration-[1s] ease-in-out"
+      style="width: calc(15 * 100% / 3);">
+      {[
+        { name: "User 1", content: "CAPE has transformed the way I take exams. Super convenient!" },
+        { name: "User 2", content: "The analytics are detailed and helped me improve a lot." },
+        { name: "User 3", content: "Very secure and reliable for online tests!" },
+        { name: "User 4", content: "I love how easy it is to navigate. Great design!" },
+        { name: "User 5", content: "CAPE ensures transparency, which I highly appreciate." },
+        { name: "User 6", content: "The support team is fantastic! Resolved my query in minutes." },
+        { name: "User 7", content: "Real-time monitoring feature is impressive and efficient." },
+        { name: "User 8", content: "I’ve recommended CAPE to all my peers. It’s the best." },
+        { name: "User 9", content: "Customizable tests made it perfect for our institution." },
+        { name: "User 10", content: "Seamless experience, from login to submission. 10/10!" },
+        { name: "User 11", content: "It's a game changer for online assessments." },
+        { name: "User 12", content: "Detailed reports helped me identify weak areas instantly." },
+        { name: "User 13", content: "CAPE made it easy to organize and monitor exams." },
+        { name: "User 14", content: "Highly secure and perfect for institutions and students alike." },
+        { name: "User 15", content: "Using CAPE feels like the future of online testing is here." }
+      ].map((review, i) => (
+        <div
+          key={i}
+          class="flex-none w-[33.33%] bg-white p-6 text-center">
+          <div class="flex flex-col items-center">
+            <img
+              src="/icons/user-placeholder.svg"
+              alt="User avatar"
+              class="w-16 h-16 rounded-full mb-4 shadow-md" />
+            <h3 class="text-lg font-bold text-gray-800">{review.name}</h3>
+            <p class="mt-2 text-gray-600">{review.content}</p>
           </div>
         </div>
-      </div>
+      ))}
     </div>
+
+    <!-- Right Arrow -->
+    <button
+      id="right-arrow"
+      class="absolute right-2 top-1/2 transform -translate-y-1/2 p-4 text-white bg-gray-700 rounded-full z-10"
+      aria-label="Next"
+    >
+      &#8594;
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  let currentIndex = 0;
+  const sliderContainer = document.querySelector('.slider-container');
+  const leftArrow = document.querySelector('#left-arrow');
+  const rightArrow = document.querySelector('#right-arrow');
+  const totalReviews = 15;
+  const reviewsVisible = 3;
+
+  const updateSliderPosition = () => {
+    sliderContainer.style.transform = `translateX(-${currentIndex * (100 / reviewsVisible)}%)`;
+  };
+
+  // Automatic sliding
+  const startAutoSlide = () => {
+    return setInterval(() => {
+      currentIndex = (currentIndex + 1) % (totalReviews / reviewsVisible);
+      updateSliderPosition();
+    }, 1000);
+  };
+
+  let autoSlide = startAutoSlide();
+
+  const stopAutoSlide = () => {
+    clearInterval(autoSlide);
+  };
+
+  // Arrow functionality
+  leftArrow.addEventListener('click', () => {
+    stopAutoSlide();
+    currentIndex = (currentIndex - 1 + (totalReviews / reviewsVisible)) % (totalReviews / reviewsVisible);
+    updateSliderPosition();
+    autoSlide = startAutoSlide();
+  });
+
+  rightArrow.addEventListener('click', () => {
+    stopAutoSlide();
+    currentIndex = (currentIndex + 1) % (totalReviews / reviewsVisible);
+    updateSliderPosition();
+    autoSlide = startAutoSlide();
+  });
+</script>
+
+<style>
+  /* General Styles */
+  #review-slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30rem; /* Adjusted to show only reviews */
+    overflow: hidden;
+    position: relative;
+  }
+
+  .slider-container {
+    display: flex;
+  }
+
+  .slider-container div {
+    flex-shrink: 0;
+  }
+
+  .slider-container div img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .slider-container div h3 {
+    font-weight: bold;
+    font-size: 1.125rem;
+    color: #374151;
+  }
+
+  .slider-container div p {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin-top: 0.5rem;
+  }
+
+  #left-arrow,
+  #right-arrow {
+    font-size: 1.5rem;
+    cursor: pointer;
+    background-color: rgba(55, 65, 81, 0.8);
+    padding: 0.5rem 1rem;
+    border: none;
+    outline: none;
+  }
+
+  #left-arrow:hover,
+  #right-arrow:hover {
+    background-color: #1F2937;
+  }
+</style>
+
+        
+
 
     <!-- Creator Section (Updated to Left-Aligned) -->
-    <div class="relative w-full py-16 bg-gray-300" id="About" data-aos="fade-up">
-      <div class="text-left pl-6 mb-8">
-        <h2 class="text-4xl font-extrabold">Meet The Creators</h2>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-[6fr_4fr] gap-8 px-10">
-        <div class="grid grid-rows-5 gap-8">
-          {[
-            {"name": "Ritik Mishra", "email": "ritik.23bce@vitbhopal.ac.in", "id": "23BCE10850"},
-            {"name": "Nikhil Bendale", "email": "nikhil.23bce10985@vitbhopal.ac.in", "id": "23BCE10985"},
-            {"name": "Krish Gursahani", "email": "krish.23bce11703@vitbhopal.ac.in", "id": "23BCE11703"},
-            {"name": "Siddharth Maurya", "email": "siddharth.23bce11797@vitbhopal.ac.in", "id": "23BCE11797"},
-            {"name": "Gaurav Bansod", "email": "gaurav23bce11487@vitbhopal.ac.in", "id": "23BCE11487"}
-          ].map((creator, i) => (
-            <div key={i} class="flex items-center gap-8">
-              <div class="w-48 h-48 bg-gray-200 rounded-full"></div>
-              <div>
-                <h3 class="text-xl font-bold">{creator.name}</h3>
-                <p>{creator.email}</p>
-                <p>{creator.id}</p>
-              </div>
-            </div>
-          ))}
+    <!-- Creator Section (Updated to Left-Aligned with Round Image Boxes) -->
+<div class="relative w-full py-16 bg-white" id="About" data-aos="fade-up">
+  <div class="text-left pl-6 mb-8">
+    <h2 align=" center" class="text-4xl font-extrabold">Meet The Creators</h2>
+  </div>
+  <div class="px-10">
+    <!-- First Row (Ritik and Nikhil) -->
+    <div class="grid grid-cols-2 gap-8 mb-8 justify-center">
+      <!-- Ritik -->
+      <div class="flex items-center gap-8 justify-center ml-4"> <!-- Shift Ritik to the left -->
+        <div class="w-48 h-48 rounded-full overflow-hidden">
+          <img src="/path/to/ritik-image.jpg" alt="Ritik Mishra" class="w-full h-full object-cover" />
         </div>
-        <div class="flex flex-col gap-8">
-          <div class="h-96 bg-gray-400 rounded-lg shadow-lg"></div>
-          <div class="h-96 bg-gray-300 rounded-lg shadow-lg"></div>
+        <div>
+          <h3 class="text-xl font-bold">Ritik Mishra</h3>
+          <p>ritik.23bce@vitbhopal.ac.in</p>
+          <p>23BCE10850</p>
+        </div>
+      </div>
+      <!-- Nikhil -->
+      <div class="flex items-center gap-8 justify-center mr-4"> <!-- Shift Nikhil to the right -->
+        <div class="w-48 h-48 rounded-full overflow-hidden">
+          <img src="/path/to/nikhil-image.jpg" alt="Nikhil Bendale" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 class="text-xl font-bold">Nikhil Bendale</h3>
+          <p>nikhil.23bce10985@vitbhopal.ac.in</p>
+          <p>23BCE10985</p>
         </div>
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="w-full bg-blue-500 py-8">
-      <div class="text-center text-white">
-        <p>&copy; 2024 CAPE. All Rights Reserved.</p>
+    <!-- Second Row (Krish, Siddharth, and Gaurav) -->
+    <div class="grid grid-cols-3 gap-8 justify-center">
+      <!-- Krish -->
+      <div class="flex items-center gap-8 justify-center">
+        <div class="w-48 h-48 rounded-full overflow-hidden">
+          <img src="/path/to/krish-image.jpg" alt="Krish Gursahani" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 class="text-xl font-bold">Krish Gursahani</h3>
+          <p>krish.23bce11703@vitbhopal.ac.in</p>
+          <p>23BCE11703</p>
+        </div>
       </div>
-    </footer>
+      <!-- Siddharth -->
+      <div class="flex items-center gap-8 justify-center">
+        <div class="w-48 h-48 rounded-full overflow-hidden">
+          <img src="/path/to/siddharth-image.jpg" alt="Siddharth Maurya" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 class="text-xl font-bold">Siddharth Maurya</h3>
+          <p>siddharth.23bce11797@vitbhopal.ac.in</p>
+          <p>23BCE11797</p>
+        </div>
+      </div>
+      <!-- Gaurav -->
+      <div class="flex items-center gap-8 justify-center">
+        <div class="w-48 h-48 rounded-full overflow-hidden">
+          <img src="/path/to/gaurav-image.jpg" alt="Gaurav Bansod" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 class="text-xl font-bold">Gaurav Bansod</h3>
+          <p>gaurav23bce11487@vitbhopal.ac.in</p>
+          <p>23BCE11487</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<!-- Footer -->
+<footer class="w-full bg-blue-500 py-8">
+  <div class="text-center text-white">
+    <p>&copy; 2024 CAPE. All Rights Reserved.</p>
+    <div class="flex justify-center space-x-6 mt-4">
+      <a href="#" class="hover:text-blue-200">Privacy Policy</a>
+      <a href="#" class="hover:text-blue-200">Copyright Policy</a>
+      <a href="https://facebook.com" class="hover:text-blue-200" target="_blank">Facebook</a>
+      <a href="https://twitter.com" class="hover:text-blue-200" target="_blank">Twitter</a>
+      <a href="https://linkedin.com" class="hover:text-blue-200" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <!-- Scroll-to-Top Button -->
+  <button
+    class="fixed bottom-12 right-12 bg-blue-600 text-white p-6 rounded-full shadow-xl hover:bg-blue-700 transition duration-300 flex items-center justify-center"
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-10 h-10">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7-7m0 0l-7 7m7-7v18" />
+    </svg>
+  </button>
+</footer>
+
+
+
   </main>
 </Layout>
