@@ -47,6 +47,7 @@ def signup(request):
         if serializer.is_valid():
             serializer.save()
             user = CustomUser.objects.get(username=request.data["username"])
+            print(user)
             user.set_password(request.data["password"])
             user.save()
             token = Token.objects.create(user=user)
@@ -108,7 +109,10 @@ def get_dash_data(request):
                     total += len(attempt.attempt_answers.all())
                     correct += len(attempt.attempt_correct.all())
                     wrong += len(attempt.attempt_wrong.all())
-                exam_specific_average = (correct / total) * 100
+                if total:
+                    exam_specific_average = (correct / total) * 100
+                else:
+                    exam_specific_average = 0
                 past_exams.append(
                     {
                         "Name": exam.exam_name,
@@ -121,7 +125,10 @@ def get_dash_data(request):
                         "wrong": wrong
                     }
                 )
-        avg_score = (correct / total) * 100
+        if total:
+            avg_score = (correct / total) * 100
+        else:
+            avg_score = 0
 
         return Response(
             {
