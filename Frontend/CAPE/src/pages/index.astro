@@ -4,6 +4,20 @@ import Nav from "@components/Navbar.tsx";
 import Footer from "@components/Footer.tsx";
 import ReviewCard from "@components/ReviewCard.tsx";
 import HLI from "@components/HomepageLandingSite.png?raw";
+import { Image } from 'astro:assets';
+import ritikimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/ritik.png';
+import nikhilimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/nikhil.png';
+import siddharthimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/siddharth.png';
+import krishimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/krish.png';
+import gauravimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/gaurav.png';
+import analyticsimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/analytics.svg';
+import friendlyimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/friendly.svg';
+import realtimeimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/realtime.svg';
+import customizeimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/customize.svg';
+import secureimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/secure.svg';
+import supportimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/support.svg';
+import studentexam from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/test.svg';
+import womanimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/woman.svg';
 ---
 
 <Layout title="CAPE">
@@ -35,11 +49,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
         </div>
       </div>
       <div class="h-screen flex justify-center items-center">
-        <img
-          src={HLI}
-          alt="Landing Image"
-          class="rounded-lg shadow-lg animate-fade-in"
-        />
+        <Image src={studentexam} alt="Landing Image" width="600" height="600" class="rounded-lg shadow-lg animate-fade-in"/>
       </div>
     </div>
 
@@ -60,7 +70,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img src="/icons/secure.svg" alt="Secure" class="w-16 h-16" />
+        <Image src={secureimage} alt="Security Guaranteed" width="150" height="150"/>
           <h3 class="text-xl font-bold text-gray-700">Highly Secure</h3>
           <p class="text-gray-600">
             Advanced security protocols ensure the integrity of your
@@ -72,11 +82,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img
-            src="/icons/user-friendly.svg"
-            alt="User-Friendly"
-            class="w-16 h-16"
-          />
+        <Image src={friendlyimage} alt="Easy to Use" width="120" height="120"/>
           <h3 class="text-xl font-bold text-gray-700">User-Friendly</h3>
           <p class="text-gray-600">
             Designed for ease of use, CAPE works seamlessly for all users.
@@ -87,7 +93,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img src="/icons/analytics.svg" alt="Analytics" class="w-16 h-16" />
+        <Image src={analyticsimage} alt="Get Detailed Analytics" width="120" height="120"/>
           <h3 class="text-xl font-bold text-gray-700">Detailed Analytics</h3>
           <p class="text-gray-600">
             Get comprehensive reports and insights to analyze performance.
@@ -98,7 +104,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img src="/icons/real-time.svg" alt="Real-Time" class="w-16 h-16" />
+        <Image src={realtimeimage} alt="Get Realtime Monitoring" width="120" height="120"/>
           <h3 class="text-xl font-bold text-gray-700">Real-Time Monitoring</h3>
           <p class="text-gray-600">
             Monitor tests in real time to maintain transparency and trust.
@@ -109,11 +115,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img
-            src="/icons/customizable.svg"
-            alt="Customizable"
-            class="w-16 h-16"
-          />
+        <Image src={customizeimage} alt="Customizable Tests According to Needs" width="200" height="400"/>
           <h3 class="text-xl font-bold text-gray-700">Customizable Tests</h3>
           <p class="text-gray-600">
             Adapt tests to suit your needs with flexible settings and options.
@@ -124,7 +126,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           class="flex flex-col items-center text-center gap-4 bg-white p-6 rounded-lg shadow-lg"
           data-aos="zoom-in"
         >
-          <img src="/icons/support.svg" alt="Support" class="w-16 h-16" />
+        <Image src={supportimage} alt="24/7 Support From CAPE" width="120" height="120"/>
           <h3 class="text-xl font-bold text-gray-700">24/7 Support</h3>
           <p class="text-gray-600">
             Our dedicated support team is here to assist you at any time.
@@ -163,73 +165,74 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           {
             [
               {
-                name: "User 1",
+                name: "Vedika",
                 content:
                   "CAPE has transformed the way I take exams. Super convenient!",
               },
               {
-                name: "User 2",
+                name: "Zafirah",
                 content:
                   "The analytics are detailed and helped me improve a lot.",
+                  
               },
               {
-                name: "User 3",
+                name: "Maanvi",
                 content: "Very secure and reliable for online tests!",
               },
               {
-                name: "User 4",
+                name: "Diksha",
                 content: "I love how easy it is to navigate. Great design!",
               },
               {
-                name: "User 5",
+                name: "Jhanvi",
                 content:
                   "CAPE ensures transparency, which I highly appreciate.",
               },
               {
-                name: "User 6",
+                name: "Mehwish",
                 content:
                   "The support team is fantastic! Resolved my query in minutes.",
               },
               {
-                name: "User 7",
+                name: "Lavanya",
                 content:
                   "Real-time monitoring feature is impressive and efficient.",
               },
               {
-                name: "User 8",
+                name: "Yash",
                 content:
                   "I’ve recommended CAPE to all my peers. It’s the best.",
               },
               {
-                name: "User 9",
+                name: "Eklavya",
                 content:
                   "Customizable tests made it perfect for our institution.",
               },
               {
-                name: "User 10",
+                name: "Omkar",
                 content:
                   "Seamless experience, from login to submission. 10/10!",
               },
               {
-                name: "User 11",
+                name: "Dhanush",
                 content: "It's a game changer for online assessments.",
               },
               {
-                name: "User 12",
+                name: "Ayush",
                 content:
                   "Detailed reports helped me identify weak areas instantly.",
               },
               {
-                name: "User 13",
+                name: "Imran",
                 content: "CAPE made it easy to organize and monitor exams.",
               },
               {
-                name: "User 14",
+                name: "Yugal",
                 content:
                   "Highly secure and perfect for institutions and students alike.",
               },
               {
-                name: "User 15",
+                name: "Harshit",
                 content:
                   "Using CAPE feels like the future of online testing is here.",
               },
@@ -239,11 +242,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
                 class="flex justify-center w-[33.33%] bg-blue-500 p-6 text-center"
               >
                 <div class="flex flex-col rounded-xl bg-white w-3/4 p-6 items-center">
-                  <img
-                    src="/icons/user-placeholder.svg"
-                    alt="User avatar"
-                    class="w-16 h-16 rounded-full mb-4 shadow-md"
-                  />
+                  <Image src={womanimage} alt="User avatar" width="60" height="60" class="w-16 h-16 rounded-full mb-4 shadow-md"/>   
                   <h3 class="text-lg font-bold text-gray-800">{review.name}</h3>
                   <p class="mt-2 text-gray-600">{review.content}</p>
                 </div>
@@ -376,11 +375,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           <div class="flex items-center gap-8 justify-center ml-4">
             <!-- Shift Ritik to the left -->
             <div class="w-48 h-48 rounded-full overflow-hidden">
-              <img
-                src="/path/to/ritik-image.jpg"
-                alt="Ritik Mishra"
-                class="w-full h-full object-cover"
-              />
+              <Image src={ritikimage} alt="Ritik Mishra" width="192" height="192" class="w-full h-full object-cover rounded-lg shadow-lg" />
             </div>
             <div>
               <h3 class="text-xl font-bold">Ritik Mishra</h3>
@@ -392,11 +387,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           <div class="flex items-center gap-8 justify-center mr-4">
             <!-- Shift Nikhil to the right -->
             <div class="w-48 h-48 rounded-full overflow-hidden">
-              <img
-                src="/path/to/nikhil-image.jpg"
-                alt="Nikhil Bendale"
-                class="w-full h-full object-cover"
-              />
+              <Image src={nikhilimage} alt="Nikhil Bendale" width="192" height="192" class="w-full h-full object-cover rounded-lg shadow-lg" />
             </div>
             <div>
               <h3 class="text-xl font-bold">Nikhil Bendale</h3>
@@ -411,11 +402,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           <!-- Krish -->
           <div class="flex items-center gap-8 justify-center">
             <div class="w-48 h-48 rounded-full overflow-hidden">
-              <img
-                src="/path/to/krish-image.jpg"
-                alt="Krish Gursahani"
-                class="w-full h-full object-cover"
-              />
+              <Image src={krishimage} alt="Krish Gursahani" width="192" height="192" class="w-full h-full object-cover rounded-lg shadow-lg" />
             </div>
             <div>
               <h3 class="text-xl font-bold">Krish Gursahani</h3>
@@ -426,11 +413,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           <!-- Siddharth -->
           <div class="flex items-center gap-8 justify-center">
             <div class="w-48 h-48 rounded-full overflow-hidden">
-              <img
-                src="/path/to/siddharth-image.jpg"
-                alt="Siddharth Maurya"
-                class="w-full h-full object-cover"
-              />
+              <Image src={siddharthimage} alt="Siddharth Maurya" width="192" height="192" class="w-full h-full object-cover rounded-lg shadow-lg" />
             </div>
             <div>
               <h3 class="text-xl font-bold">Siddharth Maurya</h3>
@@ -441,11 +424,7 @@ import HLI from "@components/HomepageLandingSite.png?raw";
           <!-- Gaurav -->
           <div class="flex items-center gap-8 justify-center">
             <div class="w-48 h-48 rounded-full overflow-hidden">
-              <img
-                src="/path/to/gaurav-image.jpg"
-                alt="Gaurav Bansod"
-                class="w-full h-full object-cover"
-              />
+              <Image src={gauravimage} alt="Gaurav Bansod" width="192" height="192" class="w-full h-full object-cover rounded-lg shadow-lg" />
             </div>
             <div>
               <h3 class="text-xl font-bold">Gaurav Bansod</h3>

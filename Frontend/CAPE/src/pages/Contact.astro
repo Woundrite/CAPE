@@ -3,39 +3,84 @@ import Layout from "@layouts/Layout.astro";
 import { Button } from "@nextui-org/react";
 import { Input, Textarea } from "@nextui-org/react";
 import Nav from "@components/Navbar.tsx";
+import { Image } from 'astro:assets';
+import contactimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/contact.svg';
+import supportteamimageimage from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/supportteam.svg';
+
 ---
 
 <Layout title="CAPE">
 	<main>
-		<Nav client:load Active="None" />
-		<!-- <Button color="primary" client:visible></Button> -->
-		<div
-			class="w-100 h-screen bg-gray-100 grid-rows-8 grid gap-2 justify-center"
-		>
-			<div></div>
-			<h1 class="font-bold grid text-center text-3xl">Contact Us</h1>
-			<p class="font-bold">
-				Please provide us some contact info to reach out to you
+	  <Nav client:load Active="None" />
+  
+	  <div class="w-full h-screen bg-gray-100 flex justify-center items-center">
+		<!-- Container for Form and Images -->
+		<div class="flex items-center justify-center w-full max-w-6xl">
+  
+		  <!-- Left Image (positioned farther above) -->
+		  <div class="hidden md:block w-1/4 pr-16 relative -top-12">
+			<Image src={contactimage} alt="Landing Image" width="600" height="600" class="rounded-lg shadow-lg animate-fade-in"/>
+		  </div>
+  
+		  <!-- Contact Form (unchanged, kept centered) -->
+		  <div class="w-full max-w-lg">
+			<h1 class="font-bold text-center text-3xl mb-4">Contact Us</h1>
+			<p class="font-bold text-center mb-4">
+			  Please provide us some contact info to reach out to you.
 			</p>
-			<div class="row-span-6">
-				<form class="grid grid-rows-5 gap-2">
-					<Input
-						type="text"
-						label="Name"
-						className="max-w-2xs border-2 rounded-2xl"
-					/>
-					<Input
-						type="email"
-						label="Email"
-						className="max-w-2xs border-2 rounded-2xl"
-					/>
-					<Textarea
-						label="Message"
-						className="max-w-2xs row-span-2 border-2 rounded-2xl"
-					/>
-					<Button color="primary">Submit</Button>
-				</form>
-			</div>
+			<form class="grid grid-rows-5 gap-4">
+			  <Input
+				type="text"
+				label="Name"
+				placeholder="Enter your name"
+				className="max-w-2xs border-2 rounded-2xl"
+			  />
+			  <Input
+				type="email"
+				label="Email"
+				placeholder="Enter your email"
+				className="max-w-2xs border-2 rounded-2xl"
+			  />
+			  <Textarea
+				label="Message"
+				placeholder="Enter your message"
+				className="max-w-2xs row-span-2 border-2 rounded-2xl"
+			  />
+			  <!-- Submit Button with Hover Effect -->
+			  <Button
+				color="primary"
+				className="transition-transform duration-200 ease-in-out transform hover:scale-105 hover:bg-blue-700"
+			  >
+				Submit
+			  </Button>
+			</form>
+		  </div>
+  
+		  <!-- Right Image (positioned farther below) -->
+		  <div class="hidden md:block w-1/4 pl-16 relative top-12">
+			<Image src={supportteamimageimage} alt="Landing Image" width="600" height="600" class="rounded-lg shadow-lg animate-fade-in"/>
+		  </div>
+  
 		</div>
+	  </div>
+  
+	  <!-- Map Section -->
+	  <div class="w-full max-w-4xl mx-auto text-center my-8">
+		<p class="text-xl font-semibold text-gray-800">
+		  Find us at VIT Bhopal University. Here's our location on the map.
+		</p>
+	  </div>
+  
+	  <div class="w-full h-96 max-w-full rounded-lg shadow-lg overflow-hidden">
+		<iframe
+		  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1270.9914300062512!2d76.85023362333014!3d23.07814171959817!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397ce9ceaaaaaaab%3A0xa224b6b82b421f83!2sVIT%20Bhopal%20University!5e0!3m2!1sen!2sin!4v1732747291392!5m2!1sen!2sin"
+		  width="100%"
+		  height="100%"
+		  style="border: 0;"
+		  allowfullscreen=""
+		  loading="lazy"
+		  referrerpolicy="no-referrer-when-downgrade"
+		></iframe>
+	  </div>
 	</main>
 </Layout>
