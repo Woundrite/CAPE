@@ -11,14 +11,15 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
-from API.models import CustomUser, Option, Question, Exam
+from API.models import CustomUser, Option, Question, Exam, Attempts
 import datetime
 from PIL import Image, ImageOps  # Install pillow instead of PIL
 import numpy as np
 from API.eyedetect import *
 import base64
 from io import BytesIO
-
+from datetime import datetime
+import pytz
 
 @api_view(["POST"])
 def signup(request):
@@ -60,6 +61,112 @@ def signup(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_dash_data(request):
+    # required data - user_type, username, email, questions correct, questions wrong, exams attempted, average score, upcoming exams, past exams
+    user = request.user
+    user_type = user.get_user_type()
+    username = user.username
+    email = user.email
+    correct = 0
+    wrong = 0
+    exams_attempted = 0
+    upcoming_exams = []
+    past_exams = []
+    total = 0
+    if user_type in ["student", "dual"]:
+        # factor in the exams attempted and the scores
+        # attempts = Attempts.objects.filter(attempt_student=user)
+        # for attempt in attempts:
+        #     total += len(attempt.attempt_answers.all())
+        #     correct += len(attempt.attempt_correct.all())
+        #     wrong += len(attempt.attempt_wrong.all())
+        #     exams_attempted += 1
+        
+        exams_all = Exam.objects.filter(exam_students=user)
+        now = datetime.now().replace(tzinfo=pytz.utc)
+        for exam in exams_all:
+            exams_attempted += 1
+            if exam.exam_start_date_time > now:
+                upcoming_exams.append(
+                    {
+                        "Name": exam.exam_name,
+                        "id": exam.ID,
+                        "attempts": exam.num_attempts,
+                        "datetime": str(exam.exam_start_date_time),
+                        "duration": exam.exam_duration,
+                    }
+                )
+            else:
+                exms = Attempts.objects.filter(attempt_student=user, attempt_exam=exam)
+                for attempt in exms:
+                    total += len(attempt.attempt_answers.all())
+                    correct += len(attempt.attempt_correct.all())
+                    wrong += len(attempt.attempt_wrong.all())
+                exam_specific_average = (correct / total) * 100
+                past_exams.append(
+                    {
+                        "Name": exam.exam_name,
+                        "id": exam.ID,
+                        "attempts": exam.num_attempts,
+                        "datetime": str(exam.exam_start_date_time),
+                        "duration": exam.exam_duration,
+                        "average_score": exam_specific_average,
+                    }
+                )
+        avg_score = (correct / total) * 100
+
+        return Response(
+            {
+                "user_type": user_type,
+                "username": username,
+                "email": email,
+                "correct": correct,
+                "wrong": wrong,
+                "exams_attempted": exams_attempted,
+                "average_score": avg_score,
+                "upcoming_exams": upcoming_exams,
+                "past_exams": past_exams,
+            }
+        )
+    elif user_type in ["teacher", "dual"]:
+        # factor in the exams created and the students
+        exams_all = Exam.objects.filter(exam_teacher=user)
+        students = []
+        for exam in exams_all:
+            students.append(
+                {
+                    "Name": exam.exam_name,
+                    "id": exam.ID,
+                    "students": exam.exam_students.all(),
+                    "questions": exam.exam_questions.all(),
+                    "attempts": exam.num_attempts,
+                    "datetime": str(exam.exam_start_date_time),
+                    "duration": exam.exam_duration,
+                }
+            )
+        return Response(
+            {
+                "user_type": user_type,
+                "username": username,
+                "email": email,
+                "exams_created": len(exams_all),
+                "students": students,
+            }
+        )
+    else:
+        return Response({"detail": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def upcoming_test(request):
+    pass
+
+
 @api_view(["POST"])
 def login(request):
     user = get_object_or_404(CustomUser, username=request.data["username"])
@@ -98,18 +205,144 @@ def test_token(request):
     }
     if request.user.user_type == "student":
         if perm in user_permissions["student"]:
-            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+            return Response(
+                {
+                    "status": "passed",
+                    "username": request.user.username,
+                    "user_type": request.user.get_user_type(),
+                    "email": request.user.email,
+                }
+            )
     elif request.user.user_type == "teacher":
         if perm in user_permissions["teacher"]:
-            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+            return Response(
+                {
+                    "status": "passed",
+                    "username": request.user.username,
+                    "user_type": request.user.get_user_type(),
+                    "email": request.user.email,
+                }
+            )
     elif request.user.user_type == "dual":
         if perm in user_permissions["student"] or perm in user_permissions["teacher"]:
-            return Response({"status": "passed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+            return Response(
+                {
+                    "status": "passed",
+                    "username": request.user.username,
+                    "user_type": request.user.get_user_type(),
+                    "email": request.user.email,
+                }
+            )
 
-    return Response({"status": "failed", "username": request.user.username, "user_type": request.user.get_user_type(), "email": request.user.email})
+    return Response(
+        {
+            "status": "failed",
+            "username": request.user.username,
+            "user_type": request.user.get_user_type(),
+            "email": request.user.email,
+        }
+    )
 
 
 @api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_test(request):
+    user = request.user
+    exam = Exam.objects.get(ID=request.data["ExamID"])
+    if user in exam.exam_students:
+        quests = exam.exam_questions
+        quests_opts = {}
+        for i in quests:
+            opts = []
+            for j in Option.objects.filter(question=i):
+                opts.append({"ID": j.ID, "text": j.text})
+            quests_opts[i.question_text] = {
+                "options": opts,
+                "correct": j.correct_answer.ID,
+            }
+
+        return Response(
+            {
+                "test": quests_opts,
+            },
+            200,
+        )
+    else:
+        return Response({"data": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def attempt_test(request):
+    user = request.user
+    exam = Exam.objects.get(ID=request.data["ExamID"])
+    if user in exam.exam_students.all():
+        correct = []
+        wrong = []
+        quests = exam.exam_questions.all()
+        opts = []
+        for i in request.data["options"]:
+            opts.append(Option.objects.get(ID=int(i)))
+
+        if len(quests) == len(opts):
+            for opt in opts:
+                if opt.is_correct:
+                    correct.append(opt.question)
+                else:
+                    wrong.append(opt.question)
+
+        attempt = Attempts.objects.create(
+            attempt_student=user,
+            attempt_exam=exam,
+            attempt_marks=len(quests),
+            attempt_submission_time=datetime.now(),
+            attempt_feedback=request.data["feedback"],
+        )
+
+        attempt.attempt_answers.set(opts)
+        attempt.attempt_correct.set(correct)
+        attempt.attempt_wrong.set(wrong)
+
+        return Response(
+            {
+                "wrong": wrong,
+                "correct": correct,
+                "time": attempt.attempt_submission_time,
+            },
+            200,
+        )
+
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_exam_result(request):
+    attempt = Attempts.objects.get(ID=int(request.data["attempt_id"]))
+    exam = attempt.attempt_exam
+    quests = exam.exam_questions.all()
+    quests_opts = {}
+    for i in quests:
+        opts = []
+        corr = None
+        for j in Option.objects.filter(question=i):
+            if j.is_correct:
+                corr = j
+            opts.append({"ID": j.ID, "text": j.option_text})
+        quests_opts[i.question_text] = {"options": opts, "correct": corr}
+
+    return Response(
+        {
+            "time": attempt.attempt_submission_time,
+            "result": quests_opts,
+        },
+        200,
+    )
+
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_test(request):
     # creates a test
@@ -174,7 +407,7 @@ def create_question(request):
         question_marks_wrong=int(request.data.get("neg_marks", 0)),
     )
     for opt in opts:
-        quest.question_answer.add(Option.objects.get(ID=int(opt)))
+        Option.objects.get(ID=int(opt)).question = quest
     return Response(
         {"id": quest.ID, "text": request.data["question"]}, status=status.HTTP_200_OK
     )
@@ -187,8 +420,9 @@ def create_option(request):
     # request contains the option text, first all existing options are checked for similarities and then new option is created if it doesn't exit the option id is returned along with a 200 created code
     # print(request.user, request.data)
     txt = request.data["text"]
-    opt, _ = Option.objects.get_or_create(option_text=txt)
-    print(opt)
+    opt = Option.objects.create(option_text=txt)
+    opt.save()
+
     return Response({"id": opt.ID, "text": txt}, status=status.HTTP_200_OK)
 
 

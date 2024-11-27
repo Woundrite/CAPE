@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, Option, Question, Exam, Attempts
-from .models import Creates, CUserAttempt, CUserCreate, AttemptExam, CreateExam
 
 class CustomUserAdmin(UserAdmin):
     # Customize how the CustomUser model is displayed in the admin interface
@@ -26,8 +25,3 @@ admin.site.register(Option)
 admin.site.register(Question)
 admin.site.register(Exam)
 admin.site.register(Attempts)
-admin.site.register(Creates)
-admin.site.register(CUserAttempt)
-admin.site.register(CUserCreate)
-admin.site.register(AttemptExam)
-admin.site.register(CreateExam)

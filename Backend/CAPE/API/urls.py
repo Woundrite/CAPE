@@ -19,14 +19,16 @@ from django.urls import re_path
 from API import views
 
 urlpatterns = [
-    re_path('signup', views.signup),
-    re_path('login', views.login),
-    re_path('test_token', views.test_token),
-    re_path('create_test', views.create_test),
-    re_path('create_option', views.create_option),
-    re_path('create_question', views.create_question),
-    re_path('test_face', views.check_image),
+    re_path("signup", views.signup),
+    re_path("login", views.login),
+    re_path("test_token", views.test_token),
+    re_path("create_test", views.create_test),
+    re_path("create_option", views.create_option),
+    re_path("create_question", views.create_question),
+    re_path("test_face", views.check_image),
     # re_path('test_autogen', views.test_autogen),
-    # re_path('attempt_test', views.attempt_test),
+    re_path("attempt_test", views.attempt_test),
+    re_path("get_exam_result", views.get_exam_result),
+	re_path("get_dash_data", views.get_dash_data),
     # re_path('test_autogen', views.test_autogen),
 ]

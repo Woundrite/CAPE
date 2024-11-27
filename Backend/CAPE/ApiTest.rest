@@ -34,6 +34,15 @@ Authorization: Token 1677f32814f6394e536ca9ca8262f684b668e66e
 
 ###
 
+POST http://127.0.0.1:8000/api/attempt_test
+Content-Type: application/json
+Authorization: Token faed22e8cd08559d5772a3cc03aa3396facb8148
+
+
+{"ExamID": "acd9b568-6b92-4141-b6da-02a495cf78ce"}
+
+###
+
 POST http://127.0.0.1:8000/api/test_face
 Content-Type: application/json
 Authorization:  Token 1677f32814f6394e536ca9ca8262f684b668e66e

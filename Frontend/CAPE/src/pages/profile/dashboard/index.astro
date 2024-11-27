@@ -1,6 +1,11 @@
 ---
 import Layout from "@layouts/LayoutVertical.astro";
 import PersonalDataComponent from "@components/PersonalDataComponent.tsx";
+
+import { Avatar } from "@nextui-org/react";
+
+import ExamHistoryComponentA from "@components/ExamHistoryComponentA.tsx";
+import { userSettings } from "../../../store.ts";
 ---
 
 <Layout title="Dashboard">
@@ -36,15 +41,15 @@ import PersonalDataComponent from "@components/PersonalDataComponent.tsx";
             ></path>
           </svg>
         </button>
-        <button
-          class="h-10 w-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition"
-        >
-          <span class="font-semibold">J</span>
-        </button>
+        <Avatar
+          showFallback
+          src={"https://ui-avatars.com/api/?background=random&name=" +
+            userSettings.get("username")}
+        />
       </div>
     </header>
 
-    <PersonalDataComponent />
+    <PersonalDataComponent client:only />
 
     <div class="bg-white shadow-md rounded-xl p-6 mb-8">
       <h2 class="text-lg font-semibold text-gray-700 mb-4">Exam Statistics</h2>
@@ -71,30 +76,7 @@ import PersonalDataComponent from "@components/PersonalDataComponent.tsx";
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 mb-8">
-      <div class="bg-white shadow-md rounded-xl p-6">
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">
-          Recent Exam Results
-        </h2>
-        <ul class="list-disc pl-5 mb-4">
-          <li class="mb-2">Math Exam: 95%</li>
-          <li class="mb-2">Science Exam: 90%</li>
-          <li class="mb-2">History Exam: 75%</li>
-        </ul>
-      </div>
-      <div class="bg-white shadow-md rounded-xl p-6">
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">To-Do List</h2>
-        <ul class="list-disc pl-5 mb-4">
-          <li class="mb-2">Review Math notes</li>
-          <li class="mb-2">Complete Science project</li>
-          <li class="mb-2">Study for History exam</li>
-        </ul>
-        <button
-          class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition"
-          >Edit</button
-        >
-      </div>
-    </div>
+    <ExamHistoryComponentA client:only />
 
     <div class="grid grid-cols-2 gap-4 mb-8">
       <div class="bg-white shadow-md rounded-xl p-6">
