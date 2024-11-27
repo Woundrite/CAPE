@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 const PersonalDataComponent = () => {
 	const settings = useStore(userSettings);
 
-
 	let header = new Headers({
 		"Content-Type": "application/json",
 		"Authorization": "Token " + settings.authtoken,
@@ -19,22 +18,10 @@ const PersonalDataComponent = () => {
 	let reqOpts = {
 		method: "GET",
 		headers: header,
-		// body: JSON.stringify({
-		// 	"attempt_id": 1,
-		// })
 	}
 
 	const [userData, setUserData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
-	// const [upcoming, setUpcoming] = useState(null);
-	// /*
-
-	// */
-	// useEffect(() => {
-	// 	setUpcoming();
-
-	// 	setIsLoading(false);
-	// }, [userData]);
 
 	if (Object.keys(userData).length === 0 && isLoading) {
 		fetch(settings.apiroot + "get_dash_data", reqOpts)
@@ -50,14 +37,14 @@ const PersonalDataComponent = () => {
 	return (
 		<Skeleton isLoaded={!isLoading}>
 			<Card className="grid grid-cols-2 gap-4 mb-8">
-				<div className="bg-white shadow-md rounded-xl p-6 h-full">
+				<div className="bg-white border-r-2 border-gray-500 rounded-l-xl p-6 h-full">
 					<h2 className="text-lg font-semibold text-gray-700 mb-4">Student Information</h2>
 					<p className="text-gray-600 mb-2"><strong>Name:</strong> {settings.username}</p>
 					<p className="text-gray-600 mb-2"><strong>Email:</strong> {settings.email}</p>
 					<p className="text-gray-600 mb-2"><strong>Exams Attempted:</strong>{userData.exams_attempted}</p>
 					<p className="text-gray-600 mb-2"><strong>Average Score:</strong> {userData.average_score}%</p>
 				</div>
-				<div className="bg-white shadow-md rounded-xl p-6">
+				<div className="bg-white rounded-xl p-6">
 					<h2 className="text-lg font-semibold text-gray-700 mb-4">Upcoming Exams</h2>
 					<ul className="list-disc pl-5 mb-4">
 						{userData.upcoming_exams ? userData.upcoming_exams.map((exam, i) => (

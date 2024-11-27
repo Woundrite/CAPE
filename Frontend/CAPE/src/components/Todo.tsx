@@ -36,10 +36,9 @@ const TodoComponent = () => {
 	};
 
 	return (
-		<div className="max-w-md mx-auto p-6">
-			<Card className="">
+			<Card shadow="none" className="w-full mx-auto">
 				<CardBody>
-					<h3 className="mb-4 text-center" >
+					<h3 className="mb-4 text-xl font-bont text-center" >
 						Todo List
 					</h3>
 					<div className="flex items-center mb-4">
@@ -88,7 +87,6 @@ const TodoComponent = () => {
 					</div>
 				</CardBody>
 			</Card>
-		</div>
 	);
 };
 

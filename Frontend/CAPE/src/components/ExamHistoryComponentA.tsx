@@ -50,7 +50,7 @@ const ExamHistoryComponentA = () => {
 							<li>No Exam History Found</li>}
 					</ul>
 				</div>
-				<TodoComponent />
+				<TodoComponent className="w-full h-full" />
 			</Card>
 		</Skeleton >
 	);

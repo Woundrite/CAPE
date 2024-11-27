@@ -1,37 +1,39 @@
 ---
 import Layout from "@layouts/LayoutVertical.astro";
+import { userSettings } from "../../../store.ts";
+import { Avatar } from "@nextui-org/react";
+import ExamTT from "@components/ExamTT.tsx";
 ---
 
 <Layout title="CAPE">
   <main class="h-screen bg-gray-50 p-8">
     <!-- Header Section -->
-    <header class="flex justify-between items-center bg-white p-5 rounded-lg shadow-sm mb-8">
-      <!-- Left: Sort Menu -->
-      <div class="flex items-center space-x-2">
-        <label for="sort" class="text-gray-600 font-medium">Sort:</label>
-        <select
-          id="sort"
-          class="border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option>Last Week</option>
-          <option>Last Month</option>
-          <option>All Time</option>
-        </select>
-      </div>
-
-      <!-- Right: Notification and Profile Buttons -->
+    <header
+      class="flex justify-between items-center bg-white p-5 rounded-lg shadow-sm mb-8"
+    >
+      <div class="flex items-center space-x-2"></div>
       <div class="flex items-center space-x-6">
-        <!-- Notification Button -->
         <button class="p-2 rounded-full hover:bg-gray-100 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.5V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.5c0 .403-.243.772-.595.895L4 17h5" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-blue-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.5V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.5c0 .403-.243.772-.595.895L4 17h5"
+            ></path>
           </svg>
         </button>
-
-        <!-- Profile Button -->
-        <button class="h-10 w-10 hover:bg-gray-100 transition rounded-full bg-blue-500 text-white flex items-center justify-center">
-          <span class="font-semibold">J</span>
-        </button>
+        <Avatar
+          showFallback
+          src={"https://ui-avatars.com/api/?background=random&name=" +
+            userSettings.get("username")}
+        />
       </div>
     </header>
 
@@ -40,78 +42,19 @@ import Layout from "@layouts/LayoutVertical.astro";
       <!-- Header Above Table -->
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-gray-700">EXAM</h2>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+        >
           Register Exam
         </button>
       </div>
-
-      <table class="w-full table-auto border-collapse">
-        <thead class="bg-gray-100 text-gray-700">
-          <tr>
-            <th class="px-6 py-4 text-left font-medium">#</th>
-            <th class="px-6 py-4 text-left font-medium">Exams</th>
-            <th class="px-6 py-4 text-left font-medium">Value</th>
-            <th class="px-6 py-4 text-left font-medium">Question</th>
-            <th class="px-6 py-4 text-left font-medium">Time Remains</th>
-            <th class="px-6 py-4 text-center font-medium">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Row 1 -->
-          <tr class="border-b hover:bg-gray-50 transition">
-            <td class="px-6 py-4">1</td>
-            <td class="px-6 py-4">Biology</td>
-            <td class="px-6 py-4">100</td>
-            <td class="px-6 py-4">26</td>
-            <td class="px-6 py-4">6:05:32</td>
-            <td class="px-6 py-4 text-center">
-              <button class="text-blue-500 hover:text-blue-700 transition">Open</button>
-            </td>
-          </tr>
-
-          <!-- Row 2 -->
-          <tr class="border-b hover:bg-gray-50 transition">
-            <td class="px-6 py-4">2</td>
-            <td class="px-6 py-4">Math</td>
-            <td class="px-6 py-4">100</td>
-            <td class="px-6 py-4">26</td>
-            <td class="px-6 py-4">10:30:54</td>
-            <td class="px-6 py-4 text-center">
-              <button class="text-blue-500 hover:text-blue-700 transition">Open</button>
-            </td>
-          </tr>
-
-          <!-- Row 3 -->
-          <tr class="border-b hover:bg-gray-50 transition">
-            <td class="px-6 py-4">3</td>
-            <td class="px-6 py-4">Chemistry</td>
-            <td class="px-6 py-4">100</td>
-            <td class="px-6 py-4">26</td>
-            <td class="px-6 py-4">1:30:22</td>
-            <td class="px-6 py-4 text-center">
-              <button class="text-blue-500 hover:text-blue-700 transition">Open</button>
-            </td>
-          </tr>
-
-          <!-- Row 4 with Red Countdown -->
-          <tr class="hover:bg-gray-50 transition">
-            <td class="px-6 py-4">4</td>
-            <td class="px-6 py-4">English</td>
-            <td class="px-6 py-4">100</td>
-            <td class="px-6 py-4">26</td>
-            <td class="px-6 py-4 text-red-500 font-semibold">00:30:56</td>
-            <td class="px-6 py-4 text-center">
-              <button class="text-blue-500 hover:text-blue-700 transition">Open</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <ExamTT client:only/>
     </div>
 
     <!-- Footer Section -->
     <footer class="mt-10">
-      <div class="h-20 bg-gray-50">
-      </div> <!-- Blends footer with background -->
+      <div class="h-20 bg-gray-50"></div>
+      <!-- Blends footer with background -->
     </footer>
   </main>
 </Layout>

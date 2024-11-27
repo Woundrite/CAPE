@@ -101,6 +101,9 @@ def get_dash_data(request):
                 )
             else:
                 exms = Attempts.objects.filter(attempt_student=user, attempt_exam=exam)
+                correct = 0
+                wrong = 0
+                total = 0
                 for attempt in exms:
                     total += len(attempt.attempt_answers.all())
                     correct += len(attempt.attempt_correct.all())
@@ -114,6 +117,8 @@ def get_dash_data(request):
                         "datetime": str(exam.exam_start_date_time),
                         "duration": exam.exam_duration,
                         "average_score": exam_specific_average,
+                        "correct": correct,
+                        "wrong": wrong
                     }
                 )
         avg_score = (correct / total) * 100
