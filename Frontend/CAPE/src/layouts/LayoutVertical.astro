@@ -14,8 +14,8 @@ import {
 } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import SidebarAnalytics from "@components/SidebarAnalytics.tsx";
-import { Image } from 'astro:assets';
-import whitelogo from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/whitelogo.png';
+import { Image } from "astro:assets";
+import whitelogo from "@Photos/whitelogo.png";
 ---
 
 <html lang="en">
@@ -50,7 +50,7 @@ import whitelogo from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/whitelogo.p
           }
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error);
           // window.location = "/";
         });
     </script>
@@ -139,9 +139,18 @@ import whitelogo from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/whitelogo.p
       <div><Toaster /></div>
       <div class="sidebar">
         <div class="cape-header">
-          <Image src={whitelogo} alt="CAPE Logo" width="40" height="40" class="rounded-lg shadow-lg animate-fade-in"/>
-          <span style="color: white; font-size: 30px; font-weight: bold; margin-left: 10px;">CAPE</span>
-        </div>        
+          <Image
+            src={whitelogo}
+            alt="CAPE Logo"
+            width="40"
+            height="40"
+            class="rounded-lg shadow-lg animate-fade-in"
+          />
+          <span
+            style="color: white; font-size: 30px; font-weight: bold; margin-left: 10px;"
+            >CAPE</span
+          >
+        </div>
         <!-- New CAPE section -->
         <Link href="/profile/dashboard">
           <FaTachometerAlt className="icon" />
@@ -174,7 +183,7 @@ import whitelogo from '/Users/orm/CAPE/CAPE/Frontend/CAPE/src/Photos/whitelogo.p
           </Link>
         </div>
       </div>
-      
+
       <main class="main-content">
         <slot />
       </main>

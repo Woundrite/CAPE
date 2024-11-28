@@ -24,13 +24,13 @@ import pytz
 @api_view(["POST"])
 def signup(request):
     serializer = UserSerializer(data=request.data)
-    usr = CustomUser.objects.filter(username=request.data["username"])
+    usr = CustomUser.objects.filter(username=request.data["username"], email=request.data["email"])
     if len(usr) == 1:
         usr = usr[0]
         token, created = Token.objects.get_or_create(user=usr)
         if usr.get_user_type() == request.data["user_type"]:
             return Response(
-                {"detail": "User already exists."}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "User already exists."}, status=status.HTTP_201_CREATED
             )
         else:
             usr.set_user_type("dual")
@@ -41,13 +41,12 @@ def signup(request):
                     "username": usr.username,
                     "user_type": usr.get_user_type(),
                     "email": usr.email,
-                }
+                }, status=status.HTTP_201_CREATED
             )
     else:
         if serializer.is_valid():
             serializer.save()
             user = CustomUser.objects.get(username=request.data["username"])
-            print(user)
             user.set_password(request.data["password"])
             user.save()
             token = Token.objects.create(user=user)
@@ -57,7 +56,7 @@ def signup(request):
                     "username": user.username,
                     "user_type": user.get_user_type(),
                     "email": user.email,
-                }
+                }, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

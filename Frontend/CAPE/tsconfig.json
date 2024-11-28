@@ -13,6 +13,15 @@
       ],
       "@layouts/*": [
         "src/layouts/*"
+      ],
+      "@Photos/*": [
+        "src/Photos/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@actions/*": [
+        "src/actions/*"
       ]
     }
   }
