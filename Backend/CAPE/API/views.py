@@ -54,9 +54,9 @@ def signup(request):
             return Response(
                 {
                     "token": token.key,
-                    "username": usr.username,
-                    "user_type": usr.get_user_type(),
-                    "email": usr.email,
+                    "username": user.username,
+                    "user_type": user.get_user_type(),
+                    "email": user.email,
                 }
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
