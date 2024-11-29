@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import re_path
+from django.views.decorators.csrf import csrf_exempt
 
 from API import views
 
@@ -30,5 +31,5 @@ urlpatterns = [
     re_path("attempt_test", views.attempt_test),
     re_path("get_exam_result", views.get_exam_result),
 	re_path("get_dash_data", views.get_dash_data),
-    # re_path('test_autogen', views.test_autogen),
+    re_path('send_mail', csrf_exempt(views.send_mail_page)),
 ]

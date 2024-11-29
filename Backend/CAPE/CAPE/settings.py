@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +30,7 @@ SECRET_KEY = 'django-insecure-5#bz3y-my0*y=58+zpl+a+g$yrnu+-)woxw=xm5!$s@e%hc8)@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost:4321", "localhost:8000", "localhost"]
 
 
 # Application definition
@@ -44,12 +48,21 @@ INSTALLED_APPS = [
     'corsheaders'
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ["DJANGOEMAIL"]#sender's email-id
+EMAIL_HOST_PASSWORD = os.environ["DJANGOAPPPASS"] #password associated with above email-id (not the regular password)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:4321','http://127.0.0.1:4321']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4321',

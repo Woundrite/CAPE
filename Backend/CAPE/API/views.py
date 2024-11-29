@@ -20,6 +20,10 @@ import base64
 from io import BytesIO
 from datetime import datetime
 import pytz
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
 
 @api_view(["POST"])
 def signup(request):
@@ -60,6 +64,26 @@ def signup(request):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(["POST"])
+def send_mail_page(request):
+    context = {}
+
+    address = request.data.get('address')
+    subject = request.data.get('subject')
+    message = request.data.get('message')
+
+    if address and subject and message:
+        try:
+            send_mail(subject, message=message, from_email=settings.EMAIL_HOST_USER, recipient_list=[address])
+            context['result'] = 'Email sent successfully'
+            print("MAIL SENT")
+        except Exception as e:
+            context['result'] = f'Error sending email: {e}'
+    else:
+        context['result'] = 'All fields are required'
+    
+    return Response(context, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -381,8 +405,11 @@ def create_test(request):
     )
     for i in stds:
         exm.exam_students.add(CustomUser.objects.get(ID=int(i)))
+
     for j in quests:
         exm.exam_questions.add(Question.objects.get(ID=int(j)))
+    
+    return Response({"ExamID": str(exm.ID)}, status=status.HTTP_201_CREATED)
 
 
 @api_view(["POST"])
@@ -411,14 +438,10 @@ def register_student_for_test(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_question(request):
-    opts = request.data["options"]
     quest = Question.objects.create(
         question_text=request.data["question"],
-        question_marks_corrent=int(request.data.get("marks", 1)),
-        question_marks_wrong=int(request.data.get("neg_marks", 0)),
     )
-    for opt in opts:
-        Option.objects.get(ID=int(opt)).question = quest
+
     return Response(
         {"id": quest.ID, "text": request.data["question"]}, status=status.HTTP_200_OK
     )
@@ -431,7 +454,10 @@ def create_option(request):
     # request contains the option text, first all existing options are checked for similarities and then new option is created if it doesn't exit the option id is returned along with a 200 created code
     # print(request.user, request.data)
     txt = request.data["text"]
-    opt = Option.objects.create(option_text=txt)
+    questid = request.data["quest"]
+    corr = request.data["corr"]
+    quest = Question.objects.get(ID=int(questid))
+    opt = Option.objects.create(option_text=txt, question=quest, is_correct=(corr==1))
     opt.save()
 
     return Response({"id": opt.ID, "text": txt}, status=status.HTTP_200_OK)

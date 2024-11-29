@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react'
 import { userSettings } from '../store.ts';
 import { toast } from 'react-hot-toast';
+
 const Statistics = () => {
 	const settings = useStore(userSettings);
 	const [isLoading, setIsLoading] = useState(true);

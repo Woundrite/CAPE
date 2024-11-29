@@ -4,7 +4,6 @@ import { ViewTransitions } from "astro:transitions";
 import { Link } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
 import { userSettings } from "../store.ts";
-import { useStore } from "@nanostores/react";
 ---
 
 <html lang="en">
@@ -12,7 +11,7 @@ import { useStore } from "@nanostores/react";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <script>
+    <!-- <script is:inline>
       const settings = useStore(userSettings);
       let header = new Headers({
         "Content-Type": "application/json",
@@ -39,7 +38,7 @@ import { useStore } from "@nanostores/react";
           }
         })
         .catch((error) => {window.location = "/";});
-    </script>
+    </script> -->
     <ViewTransitions />
   </head>
   <body>
