@@ -18,12 +18,14 @@ import numpy as np
 from API.eyedetect import *
 import base64
 from io import BytesIO
-from datetime import datetime
+import datetime as dt
 import pytz
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
+from dateutil import parser
+
 
 @api_view(["POST"])
 def signup(request):
@@ -110,16 +112,21 @@ def get_dash_data(request):
         #     exams_attempted += 1
         
         exams_all = Exam.objects.filter(exam_students=user)
-        now = datetime.now().replace(tzinfo=pytz.utc)
+        now = dt.datetime.now().replace(tzinfo=pytz.utc)
         for exam in exams_all:
             exams_attempted += 1
-            if exam.exam_start_date_time > now:
+            if exam.exam_end_date_time > now:
+                # check if exam is already attempted or not
+                if Attempts.objects.filter(attempt_student=user, attempt_exam=exam):
+                    continue
+                
                 upcoming_exams.append(
                     {
                         "Name": exam.exam_name,
                         "id": exam.ID,
                         "attempts": exam.num_attempts,
                         "datetime": str(exam.exam_start_date_time),
+                        "datetime_end": str(exam.exam_end_date_time),
                         "duration": exam.exam_duration,
                     }
                 )
@@ -376,91 +383,102 @@ def get_exam_result(request):
     )
 
 
+def create_question(request):
+    quest = Question.objects.create(
+        # question_text=request.data["question"],
+        question_text=request,
+    )
+
+    # return Response({"id": quest.ID, "text": request.data["question"]}, status=status.HTTP_200_OK)
+    return {"id": quest.ID, "text": request}
+
+def create_option(request):
+    # request contains the option text, first all existing options are checked for similarities and then new option is created if it doesn't exit the option id is returned along with a 200 created code
+    # print(request.user, request)
+    txt = request["text"]
+    questid = request["quest"]
+    corr = request["corr"]
+    quest = Question.objects.get(ID=int(questid))
+    opt = Option.objects.create(option_text=txt, question=quest, is_correct=(corr==1))
+    opt.save()
+
+    # return Response({"id": opt.ID, "text": txt}, status=status.HTTP_200_OK)
+    return {"id": opt.ID, "text": txt}
+    
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_test(request):
+    def strfdelta(tdelta, fmt):
+        d = {"days": tdelta.days}
+        d["hours"], rem = divmod(tdelta.seconds, 3600)
+        d["minutes"], d["seconds"] = divmod(rem, 60)
+        return fmt.format(**d)
     # creates a test
-    quests = request.data["questions"]
+
+    quests = [create_question(i)["id"] for i in request.data["questions"]]
+    opts = request.data["options"]
+
+    options = []
+    for i in zip(quests, opts):
+        for j in i[1]:
+            opt = {"text": j["text"], "corr": j["corr"], "quest":i[0]}
+            create_option(opt)
+            options.append(opt)
+
     stds = request.data["students"]
-    dt = datetime.datetime.now()
+
+    dat = dt.datetime.now()
+
+    duration = dt.datetime.strptime(
+            request.data.get("exam_duration", strfdelta(dt.timedelta(minutes=30), "{hours}:{minutes}:{seconds}")).split("[")[0],
+        "%H:%M:%S")
+    duration = dt.timedelta(hours=duration.hour, minutes=duration.minute, seconds=duration.second)
+
     exm = Exam.objects.create(
         exam_name=request.data["name"],
-        exam_start_date_time=datetime.datetime.strptime(
-            request.data.get("exam_start_date_time", dt.strftime("%d/%m/%Y %H:%M:%S")),
-            "%d/%m/%Y %H:%M:%S",
+        exam_start_date_time=dt.datetime.fromisoformat(
+            request.data.get("exam_start_date_time", dat.isoformat()).split("[")[0],
         ),
-        exam_end_date_time=datetime.datetime.strptime(
+        exam_end_date_time=dt.datetime.fromisoformat(
             request.data.get(
                 "exam_end_date_time",
-                (dt + datetime.timedelta(days=1)).strftime("%d/%m/%Y %H:%M:%S"),
-            )
+                (dat + dt.timedelta(days=1)).isoformat(),
+            ).split("[")[0]
         ),
-        exam_duration=datetime.datetime.strptime(
-            request.data.get("exam_duration", datetime.time(1).strftime("%H:%M:%S")),
-            "%H:%M:%S",
-        ).time(),
+        exam_duration=duration,
         num_attempts=int(request.data.get("num_attempts", 1)),
         exam_teacher=request.user,
     )
+    exm.save()
     for i in stds:
         exm.exam_students.add(CustomUser.objects.get(ID=int(i)))
 
     for j in quests:
         exm.exam_questions.add(Question.objects.get(ID=int(j)))
-    
+
+    exm.save()    
     return Response({"ExamID": str(exm.ID)}, status=status.HTTP_201_CREATED)
-
-
-@api_view(["POST"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def register_questions_for_test(request):
-    exm = Exam.objects.get(ID=request.data["exam_id"])
-    for i in request.data["questions"]:
-        exm.exam_questions.add(Question.objects.get(ID=int(i)))
-
 
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def register_student_for_test(request):
     exm = Exam.objects.get(ID=request.data["exam_id"])
-    for i in request.data["students"]:
-        exm.exam_students.add(CustomUser.objects.get(ID=int(i)))
-    return Response(
-        {"detail": "Students added to exam", "SID": request.data["students"]},
-        status=status.HTTP_200_OK,
-    )
+    if exm:
+        if request.data.get("students", None)
+            for i in request.data["students"]:
+                exm.exam_students.add(CustomUser.objects.get(ID=int(i)))
+            return Response(
+                {"detail": "Students added to exam", "SID": request.data["students"]},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            exm.exam_students.add(request.user)
+        exm.save()
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(["POST"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_question(request):
-    quest = Question.objects.create(
-        question_text=request.data["question"],
-    )
-
-    return Response(
-        {"id": quest.ID, "text": request.data["question"]}, status=status.HTTP_200_OK
-    )
-
-
-@api_view(["POST"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_option(request):
-    # request contains the option text, first all existing options are checked for similarities and then new option is created if it doesn't exit the option id is returned along with a 200 created code
-    # print(request.user, request.data)
-    txt = request.data["text"]
-    questid = request.data["quest"]
-    corr = request.data["corr"]
-    quest = Question.objects.get(ID=int(questid))
-    opt = Option.objects.create(option_text=txt, question=quest, is_correct=(corr==1))
-    opt.save()
-
-    return Response({"id": opt.ID, "text": txt}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

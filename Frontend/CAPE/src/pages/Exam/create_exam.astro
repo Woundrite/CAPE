@@ -1,0 +1,10 @@
+---
+import Layout from "@layouts/LayoutVertical.astro";
+import ExamTab from "@components/ExamTab.tsx";
+---
+
+<Layout title="CAPE">
+  <!-- <main class="h-screen bg-gray-50 p-8 flex"> -->
+    <ExamTab client:only />
+  <!-- </main> -->
+</Layout>

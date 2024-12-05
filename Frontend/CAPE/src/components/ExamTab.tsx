@@ -1,29 +1,25 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, RadioGroup, Radio } from "@nextui-org/react";
 import React, { useState } from "react";
 import { Input, Button, useModal, DatePicker, DateRangePicker } from "@nextui-org/react";
-import { parseAbsoluteToLocal } from "@internationalized/date";
+import { parseZonedDateTime } from "@internationalized/date";
 import { userSettings } from '../store.ts';
 import { useStore } from '@nanostores/react'
 import toast, { Toaster } from 'react-hot-toast';
-// Define the structure of a question
-interface Question {
-	question: string;
-	options: string[];
-	answer: number | null; // Index of the correct answer or null if not selected
-}
 
 const ExamTab = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [currentQuestion, setCurrentQuestion] = useState<number>(1);
-	const [date, setDate] = React.useState({
-		start: parseAbsoluteToLocal("2024-04-01T18:45:22Z"),
-		end: parseAbsoluteToLocal("2024-04-08T19:15:22Z"),
+	const [date, setDate] = useState({
+		start: parseZonedDateTime("2024-12-01T00:45[Asia/Kolkata]"),
+		end: parseZonedDateTime("2024-12-01T00:45[Asia/Kolkata]"),
 	});
 
 	const settings = useStore(userSettings);
-	const [questions, setQuestions] = useState<Question[]>(
-		Array.from({ length: 100 }, () => ({ question: "", options: ["", "", "", ""], answer: null }))
-	);
+	const [questions, setQuestions] = useState(Array.from({ length: 100 }, () => ("")))
+
+	const [options, setOptions] = useState(Array.from({ length: 100 }, () => (["", "", "", ""])));
+
+	const [correct, setCorrect] = useState(Array.from({ length: 100 }, () => (null)));
 
 	let header = new Headers({
 		"Content-Type": "application/json",
@@ -44,87 +40,33 @@ const ExamTab = () => {
 	const [examName, setExamName] = useState("");
 	const [duration, setDuration] = useState("");
 
-	const createOpts = (qid: string, opts: any, correct: number) => {
-		let id_arr: string[] = [];
-
+	const createOpts = (opts: any, correct: number) => {
+		var id_arr: string[] = [];
+		
 		for (let i = 0; i < opts.length; i++) {
-			if (i == correct) {
-				opts[i] = { "quest": qid, "text": opts[i], "is_correct": true }
-			}
-			else {
-				opts[i] = { "quest": qid, "text": opts[i], "is_correct": false }
-			}
+			id_arr.push({ "text": opts[i], "corr": i === correct });
 		}
-
-		opts.forEach((opt) => {
-			let reqOpts = {
-				method: "POST",
-				headers: header,
-				body: JSON.stringify(opt)
-			}
-
-			fetch(settings.apiroot + "create_option", reqOpts)
-				.then(response => response.json())
-				.then(result => {
-					id_arr.push(result.id);
-				})
-				.catch(error => toast.error('error', error));
-		});
 
 		return id_arr;
 
-
 	}
 
-	const createQuests = (quests: string) => {
-
-		let reqOpts = {
-			method: "POST",
-			headers: header,
-			body: JSON.stringify({
-				"question": quests
-			})
-		}
-
-		let id: string = "0";
-
-		fetch(settings.apiroot + "create_question", reqOpts)
-			.then(response => response.json())
-			.then(result => {
-				id = result.id;
-			})
-			.catch(error => toast.error('error', error));
-		return id;
-	}
+	const [QuestArr, setQuestArr] = useState([]);
 
 	const Submit = () => {
-		// Data Required:
-		// num_attempts
-		// questions - id
-		// students -id
-		// name
-		// exam_start_date_time
-		// exam_end_date_time
-		// exam_duration
+		var quest_array: string[] = [];
+		var opt_array = [];
 
-		let quest_array: string[] = [];
-		let opt_array = [];
-
-		questions.forEach((quest) => {
-			let id = createQuests(quest.question)
-			quest_array.push();
-			opt_array.push(createOpts(id, quest.options, quest.answer ? quest.answer : 0));
-		})
-
-
+		opt_array = questions.map((quest, index) => createOpts(options[index], correct[index] != null ? correct[index] : 0));
 		let context = {
 			"num_attempts": 1,
-			"questions": quest_array,
+			"questions": questions,
+			"options": opt_array,
 			"students": [],
 			"name": examName,
-			"exam_start_date_time": "",
-			"exam_end_date_time": "",
-			"exam_duration": "",
+			"exam_start_date_time": String(date.start),
+			"exam_end_date_time": String(date.end),
+			"exam_duration": duration,
 		}
 
 		let reqOpts = {
@@ -133,36 +75,32 @@ const ExamTab = () => {
 			body: JSON.stringify(context)
 		}
 
-
-		// fetch(settings.apiroot + "signup", reqOpts)
-		// 	.then(response => response.json())
-		// 	.then(result => {
-		// 	})
-		// 	.catch(error => toast.error('error', error));
+		fetch(settings.apiroot + "create_test", reqOpts)
+			.then(response => response.json())
+			.then(result => { console.log(result);setQuestArr([])
+				window.href = "/profile/Exams"
+			})
+			.catch(error => toast.error('error', error));
 	}
 
 	const handleQuestionChange = (
-		field: keyof Question,
+		field: string,
 		value: string | number,
 		optionIndex?: number
 	) => {
-		setQuestions((prev) =>
-			prev.map((q, index) =>
-				index === currentQuestion - 1
-					? {
-						...q,
-						[field]:
-							field === "options" && optionIndex !== undefined
-								? [
-									...q.options.slice(0, optionIndex),
-									value as string,
-									...q.options.slice(optionIndex + 1),
-								]
-								: value,
-					}
-					: q
-			)
-		);
+		if (field == "question") {
+			let q = questions.map((q, index) => index == currentQuestion - 1 ? String(value) : q);
+			setQuestions(q);
+		}
+		else if (field == "options") {
+			let op = [...options[currentQuestion - 1]]
+			op[optionIndex ? optionIndex : 0] = String(value)
+			let opt = options.map((opt, index) => index == currentQuestion - 1 ? op : opt);
+			setOptions(opt);
+		} else if (field == "answer") {
+			let cor = correct.map((cor, index) => index == currentQuestion - 1 ? Number(value) : cor);
+			setCorrect(cor);
+		}
 	};
 
 	const closeButton = (
@@ -175,30 +113,13 @@ const ExamTab = () => {
 	);
 
 	const handleAddOption = () => {
-		setQuestions((prev) =>
-			prev.map((q, index) =>
-				index === currentQuestion - 1
-					? {
-						...q,
-						options: [...q.options, ""], // Add an empty option
-					}
-					: q
-			)
-		);
+		let opt = options.map((opt, index) => index == currentQuestion - 1 ? [...opt, ""] : opt);
+		setOptions(opt);
 	};
 
 	let handleRemOption = () => {
-		setQuestions((prev) =>
-			prev.map((q, index) =>
-			((index === currentQuestion - 1) && (q.options.length > 1)
-				? {
-					...q,
-					options: [...q.options.splice(0, q.options.length - 1)], // Add an empty option
-				}
-				: q
-			)
-			)
-		);
+		let opt = options.map((opt, index) => index == currentQuestion - 1 ? opt.splice(0, opt.length - 1) : opt);
+		setOptions(opt);
 	};
 
 	const changeExamName = (value: string) => {
@@ -210,16 +131,28 @@ const ExamTab = () => {
 
 		if (len < questions.length) {
 			let q = questions;
-			q.length = len
+			let corr = correct;
+			let opts = options;
+
+			q.length = len;
+			opts.length = len;
+			corr.length = len;
 			setQuestions([...q]);
+			setOptions([...opts])
+			setCorrect([...corr]);
 		}
 		else {
 			let diff = len - questions.length;
-			let arr: Question[] = Array(diff).fill({ question: "", options: ["", "", "", ""], answer: null });
-			arr = [...questions].concat(arr);
-			setQuestions(arr);
+			let ques = Array(diff).fill("");
+			let Opts = Array(diff).fill(["", "", "", ""]);
+			let Corr = Array(diff).fill(null);
+			ques = [...questions].concat(ques);
+			Opts = [...options].concat(Opts);
+			Corr = [...correct].concat(Corr);
+			setQuestions(ques);
+			setCorrect(Corr);
+			setOptions(Opts);
 		}
-
 		console.log(questions);
 		setQuestionIndex(Math.max(1, Math.min(500, value)));
 	};
@@ -257,7 +190,8 @@ const ExamTab = () => {
 									<span>Start - End Date Time</span>
 									<DateRangePicker
 										fullWidth
-										granularity="minute"
+										hideTimeZone
+										granularity="second"
 										label="Start - End Date Time"
 										hourCycle={24}
 										value={date}
@@ -359,7 +293,7 @@ const ExamTab = () => {
 						<Input
 							label="Enter Question"
 							placeholder="Type your question here..."
-							value={questions[currentQuestion - 1]?.question || ""}
+							value={questions[currentQuestion - 1] || ""}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 								handleQuestionChange("question", e.target.value)
 							}
@@ -368,19 +302,19 @@ const ExamTab = () => {
 					</div>
 
 					{/* Options Inputs */}
-					{questions[currentQuestion - 1]?.options.map((option, idx) => (
+					{options[currentQuestion - 1]?.map((option, idx) => (
 						<div key={idx} className="flex items-center gap-2 mb-3">
 							<input
 								type="radio"
 								name={`answer-${currentQuestion}`}
-								checked={questions[currentQuestion - 1]?.answer === idx}
+								checked={correct[currentQuestion - 1] === idx}
 								onChange={() => handleQuestionChange("answer", idx)}
 								className="w-5 h-5"
 							/>
 							<Input
 								placeholder={`Enter Option ${idx + 1}`}
 								value={option}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								onChange={(e) =>
 									handleQuestionChange("options", e.target.value, idx)
 								}
 								fullWidth
@@ -405,7 +339,7 @@ const ExamTab = () => {
 								className="mt-2 mr-2"
 								color="default"
 								onClick={handleAddOption}
-								disabled={questions[currentQuestion - 1]?.options.length >= 10} // Limit options to 10
+								disabled={options[currentQuestion - 1].length >= 10} // Limit options to 10
 							>
 								Add Option
 							</Button>
@@ -413,7 +347,7 @@ const ExamTab = () => {
 								className="mt-2 ml-2"
 								color="default"
 								onClick={handleRemOption}
-								disabled={questions[currentQuestion - 1]?.options.length >= 10} // Limit options to 10
+								disabled={options[currentQuestion - 1].length >= 10} // Limit options to 10
 							>
 								Remove Option
 							</Button>
@@ -424,7 +358,7 @@ const ExamTab = () => {
 							</Button> :
 							<Button
 								color="primary"
-								disabled={currentQuestion === questionIndex.questionLimit}
+								disabled={currentQuestion === questionIndex}
 								onClick={() => setCurrentQuestion(currentQuestion + 1)}
 							>
 								Next

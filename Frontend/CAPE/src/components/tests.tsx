@@ -36,6 +36,7 @@ const TestCards = () => {
 			.then(response => response.json())
 			.then(result => {
 				setExamData(result.past_exams);
+				console.log(result)
 				setIsLoading(false)
 			})
 			.catch(error => toast.error('error', error));
@@ -48,7 +49,7 @@ const TestCards = () => {
 				<div className="grid grid-cols-4 gap-4">
 					{examData ?
 						examData.map((test, index) => (
-							<Drawer key={index} key={index} id={test.id} onClose={() => setIsDrawerOpen(false)} title={test.Name} trigger={
+							<Drawer key={index} data={{"Name": test.Name, "avg": test.average_score}} key={index} id={test.id} onClose={() => setIsDrawerOpen(false)} title={test.Name} trigger={
 								<Card shadow={"none"} bordered className="h-auto shadow-medium border-2 bg-white">
 									<CardBody key={index} className="grid grid-cols-[1fr_3fr] justify-left items-center">
 										<div></div>
