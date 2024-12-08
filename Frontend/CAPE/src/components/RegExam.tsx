@@ -1,7 +1,7 @@
 import { userSettings } from '../store.ts';
 import { useStore } from '@nanostores/react'
-
-const RegExam = () => {
+import toast, { Toaster } from 'react-hot-toast';
+const RegExam = (ID: string) => {
 	const settings = useStore(userSettings);
 
 	let header = new Headers({
@@ -12,14 +12,25 @@ const RegExam = () => {
 		'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
 	});
 
-	let reqOpts = {
-			method: "POST",
-			headers: header,
-			body: JSON.stringify(context)
-		}
+	let context = {
+		"exam_id": ID.ID,
+	}
 
-		register_student_for_test
-	return ();
+	let reqOpts = {
+		method: "POST",
+		headers: header,
+		body: JSON.stringify(context)
+	}
+	console.log(settings, reqOpts)
+
+	fetch(settings.apiroot + "register_student_for_test", reqOpts)
+		.then(response => response.json())
+		.then(result => {
+			console.log(result);
+			window.location = "/profile/Exams"
+		})
+		.catch(error => toast.error('error', error));
+	return (<></>);
 }
 
 export default RegExam;

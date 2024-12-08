@@ -1,0 +1,15 @@
+---
+import Layout from "@layouts/LayoutExam.astro";
+import ExamAttemptTab from "@components/ExamAttemptTab.tsx";
+import { userSettings } from '@components/../store.ts';
+import toast, {Toaster} from 'react-hot-toast';
+export const prerender = false;
+const { slug } = Astro.params;
+console.log(slug);
+---
+
+<Layout title="CAPE">
+  <!-- <main class="h-screen bg-gray-50 p-8 flex"> -->
+    <ExamAttemptTab ID={slug} client:only />
+  <!-- </main> -->
+</Layout>

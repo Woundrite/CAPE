@@ -25,6 +25,7 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from dateutil import parser
+import uuid
 
 
 @api_view(["POST"])
@@ -318,8 +319,15 @@ def get_test(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def attempt_test(request):
+
+    def strfdelta(tdelta, fmt):
+        d = {"days": tdelta.days}
+        d["hours"], rem = divmod(tdelta.seconds, 3600)
+        d["minutes"], d["seconds"] = divmod(rem, 60)
+        return fmt.format(**d)
+    
     user = request.user
-    exam = Exam.objects.get(ID=request.data["ExamID"])
+    exam = Exam.objects.get(ID=uuid.UUID(request.data["ExamID"]))
     if user in exam.exam_students.all():
         correct = []
         wrong = []
@@ -331,16 +339,24 @@ def attempt_test(request):
         if len(quests) == len(opts):
             for opt in opts:
                 if opt.is_correct:
-                    correct.append(opt.question)
+                    correct.append(opt)
                 else:
-                    wrong.append(opt.question)
+                    wrong.append(opt)
+
+        duration = dt.datetime.strptime(
+            request.data.get("duration", strfdelta(dt.timedelta(minutes=30), "{hours}:{minutes}:{seconds}")).split("[")[0],
+        "%H:%M:%S")
+
+        print(duration)
+        duration = dt.timedelta(hours=duration.hour, minutes=duration.minute, seconds=duration.second)
 
         attempt = Attempts.objects.create(
             attempt_student=user,
             attempt_exam=exam,
             attempt_marks=len(quests),
-            attempt_submission_time=datetime.now(),
+            attempt_submission_time=dt.datetime.now(),
             attempt_feedback=request.data["feedback"],
+            attempt_time = duration
         )
 
         attempt.attempt_answers.set(opts)
@@ -349,8 +365,8 @@ def attempt_test(request):
 
         return Response(
             {
-                "wrong": wrong,
-                "correct": correct,
+                "wrong": [w.ID for w in wrong],
+                "correct": [c.ID for c in correct],
                 "time": attempt.attempt_submission_time,
             },
             200,
@@ -416,6 +432,9 @@ def create_test(request):
         return fmt.format(**d)
     # creates a test
 
+    if request.user.user_type == "student":
+        return Response({"detail": "User doesnt have sufficient priviledges"}, status = status.HTTP_403_FORBIDDEN)
+
     quests = [create_question(i)["id"] for i in request.data["questions"]]
     opts = request.data["options"]
 
@@ -463,23 +482,54 @@ def create_test(request):
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
+def get_test_details(request):
+    exm_id = uuid.UUID(request.data["ID"])
+    
+    exm = Exam.objects.get(ID=exm_id)
+    ques = exm.exam_questions.all()
+    qArr = []
+
+    for i in ques:
+        ques = {}
+        ques["ID"] = i.ID
+        ques["text"] = i.question_text
+        opts = []
+        for j in Option.objects.filter(question=i):
+            opts.append({"ID": j.ID, "text": j.option_text})
+        ques["options"] = opts
+        qArr.append(ques)
+
+    return Response({"Name": exm.exam_name, "Teacher": exm.exam_teacher.username, "Duration": exm.exam_duration, 
+                    "Num_attempts": exm.num_attempts, "Questions": qArr}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def register_student_for_test(request):
     exm = Exam.objects.get(ID=request.data["exam_id"])
     if exm:
-        if request.data.get("students", None)
+        if request.data.get("students", None):
             for i in request.data["students"]:
-                exm.exam_students.add(CustomUser.objects.get(ID=int(i)))
-            return Response(
-                {"detail": "Students added to exam", "SID": request.data["students"]},
-                status=status.HTTP_200_OK,
-            )
+                exm.exam_students.add(CustomUser.objects.get(username=int(i)))
+            return Response( {"detail": "Students added to exam", "SID": request.data["students"]}, status=status.HTTP_200_OK )
         else:
             exm.exam_students.add(request.user)
+            return Response( {"detail": "Students added to exam", "SID": request.user.username}, status=status.HTTP_200_OK )
         exm.save()
-    else:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response({"detail": "Exam not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 
-
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_all_exams(request):
+    usr = request.user
+    exms = Exam.objects.filter(exam_students=usr)
+    uuid_lst = []
+    for i in exms:
+        uuid_lst.append(i.ID)
+    print(uuid_lst)
+    return Response({"ID": uuid_lst}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

@@ -102,8 +102,9 @@ class Attempts(models.Model):
     attempt_feedback = models.CharField(max_length=500)
     attempt_answers = models.ManyToManyField(Option, related_name="AttemptOption")
     attempt_correct = models.ManyToManyField(
-        Option, related_name="AttemptCorrect", null=True, blank=True
+        Option, related_name="AttemptCorrect", blank=True
     )
     attempt_wrong = models.ManyToManyField(
-        Option, related_name="AttemptWrong", null=True, blank=True
+        Option, related_name="AttemptWrong", blank=True
     )
+    attempt_cheats = models.IntegerField(null=True, default=0)

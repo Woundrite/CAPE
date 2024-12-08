@@ -1,0 +1,19 @@
+---
+import Layout from "@layouts/LayoutVertical.astro";
+import RegExam from "@components/RegExam.tsx";
+import { userSettings } from "@components/../store.ts";
+import toast, { Toaster } from "react-hot-toast";
+export const prerender = false;
+const { slug } = Astro.params;
+---
+
+<Layout title="CAPE">
+	<main class="h-screen bg-gray-50 p-8">
+		<RegExam ID={slug} client:only />
+		<!-- Footer Section -->
+		<footer class="mt-10">
+			<div class="h-20 bg-gray-50"></div>
+			<!-- Blends footer with background -->
+		</footer>
+	</main>
+</Layout>

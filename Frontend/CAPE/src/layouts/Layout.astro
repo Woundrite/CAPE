@@ -1,6 +1,6 @@
 ---
 const { title } = Astro.props;
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import toast, { Toaster } from "react-hot-toast";
 ---
 
@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{title}</title>
-		<ViewTransitions />
+		<ClientRouter />
 	</head>
 	<body>
 		<div><Toaster /></div>
