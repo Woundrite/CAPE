@@ -75,13 +75,14 @@ def send_mail_page(request):
     address = request.data.get('address')
     subject = request.data.get('subject')
     message = request.data.get('message')
-
+    print(address, subject, message)
     if address and subject and message:
         try:
             send_mail(subject, message=message, from_email=settings.EMAIL_HOST_USER, recipient_list=[address])
             context['result'] = 'Email sent successfully'
             print("MAIL SENT")
         except Exception as e:
+            print(e)
             context['result'] = f'Error sending email: {e}'
     else:
         context['result'] = 'All fields are required'
