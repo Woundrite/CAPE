@@ -7,7 +7,8 @@ interface DrawerProps {
 	title?: string;
 	children: React.ReactNode;
 	trigger: React.ReactNode;
-	id?: string
+	id?: string;
+
 }
 
 const Drawer: React.FC<DrawerProps> = ({ onClose, id, title, children, trigger }) => {
@@ -49,7 +50,9 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, id, title, children, trigger }
 						[&::-webkit-scrollbar-thumb]:rounded-full
 						[&::-webkit-scrollbar-thumb]:bg-gray-300
 						dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-						dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 overflow-y-auto w-[30vw]">{children}</div>
+						dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 overflow-y-auto w-[30vw]">
+						{children}
+					</div>
 
 				</div>
 			</div>

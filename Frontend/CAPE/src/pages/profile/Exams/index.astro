@@ -3,6 +3,7 @@ import Layout from "@layouts/LayoutVertical.astro";
 import { userSettings } from "../../../store.ts";
 import { Avatar } from "@nextui-org/react";
 import ExamTT from "@components/ExamTT.tsx";
+import Register from "@components/Profile/Exam/Register.tsx";
 ---
 
 <Layout title="CAPE">
@@ -30,9 +31,8 @@ import ExamTT from "@components/ExamTT.tsx";
           </svg>
         </button>
         <Avatar
-          showFallback
-          src={"https://ui-avatars.com/api/?background=random&name=" +
-            userSettings.get("username")}
+        src={"https://ui-avatars.com/api/?background=random&name=" + userSettings.get().username }
+        showFallback
         />
       </div>
     </header>
@@ -42,13 +42,9 @@ import ExamTT from "@components/ExamTT.tsx";
       <!-- Header Above Table -->
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-gray-700">EXAM</h2>
-        <button
-          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Register Exam
-        </button>
+        <Register client:only />
       </div>
-      <ExamTT client:only/>
+      <ExamTT client:only />
     </div>
 
     <!-- Footer Section -->

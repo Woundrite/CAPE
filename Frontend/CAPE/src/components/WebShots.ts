@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 
-const useWebcamScreenshotInterval = (duration) => {
-	const intervalRef = useRef(null);
-	const [stream, setStream] = useState(null);
+const useWebcamScreenshotInterval = (duration: number) => {
+	const intervalRef = useRef(setTimeout(() => { }, 0));
+	const [stream, setStream] = useState(new MediaStream());
 	const [screenshots, setScreenshots] = useState([]);
 
 	useEffect(() => {
@@ -20,16 +20,15 @@ const useWebcamScreenshotInterval = (duration) => {
 		if (stream !== null) {
 			const track = stream.getVideoTracks()[0];
 			const imageCapture = new ImageCapture(track);
-
 			intervalRef.current = setInterval(() => {
 				imageCapture.takePhoto()
-					.then(blob => {
-						setScreenshots(prevState => ([
+					.then((blob: any) => {
+						setScreenshots((prevState: any) => ([
 							...prevState,
 							blob
 						]))
 					})
-					.catch(error => {
+					.catch((error: any) => {
 						console.log(error);
 						clearInterval(intervalRef.current);
 					})

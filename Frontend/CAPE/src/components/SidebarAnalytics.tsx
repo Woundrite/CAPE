@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Card, Button, Badge, } from "@nextui-org/react";
 import Chart from "react-apexcharts";
 
-const SidebarAnalytics = () => {
+const SidebarAnalytics = (data: any) => {
+	console.log("data: ", data.data.avg)
 	const [chartData] = useState({
-		series: [60], // Represents the percentage
+		series: [data.data.avg], // Represents the percentage
 		options: {
 			chart: {
 				height: 200,
@@ -13,7 +14,7 @@ const SidebarAnalytics = () => {
 			plotOptions: {
 				radialBar: {
 					hollow: {
-						size: "70%",
+						size: String(data.data.avg)+"%",
 					},
 					dataLabels: {
 						name: {
@@ -30,6 +31,8 @@ const SidebarAnalytics = () => {
 			colors: ["#6C63FF"],
 		},
 	});
+
+	console.log(chartData)
 
 	return (
 		<div className="p-4 space-y-6 bg-white rounded-lg shadow-md">
@@ -51,15 +54,15 @@ const SidebarAnalytics = () => {
 				<div className="space-y-2">
 					<div className="w-full bg-yellow-400 flex justify-between items-center p-4 rounded">
 						<p className="font-bold text-black">
-							60
+							{data.data.correct}
 						</p>
-						<p className="text-black font-bold">Students attempted</p>
+						<p className="text-black font-bold">Correct Answers</p>
 					</div>
 					<div color="warning" className="w-full flex bg-blue-400 justify-between items-center p-4 rounded">
 						<p className="font-bold text-black ">
-							40
+							{data.data.wrong}
 						</p>
-						<p className="text-black font-bold">Students didn’t attempt</p>
+						<p className="text-black font-bold">Wrong Answers</p>
 					</div>
 				</div>
 			</Card>

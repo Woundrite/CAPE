@@ -500,6 +500,8 @@ def get_test_details(request):
         ques["options"] = opts
         qArr.append(ques)
 
+        print(opts)
+
     return Response({"Name": exm.exam_name, "Teacher": exm.exam_teacher.username, "Duration": exm.exam_duration, 
                     "Num_attempts": exm.num_attempts, "Questions": qArr}, status=status.HTTP_200_OK)
 

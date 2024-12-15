@@ -42,6 +42,9 @@ const TestCards = () => {
 			.catch(error => toast.error('error', error));
 	}
 
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	
+
 	return (
 		<Skeleton isLoaded={!isLoading}>
 			<Card className="p-6">
@@ -49,8 +52,8 @@ const TestCards = () => {
 				<div className="grid grid-cols-4 gap-4">
 					{examData ?
 						examData.map((test, index) => (
-							<Drawer key={index} data={{"Name": test.Name, "avg": test.average_score}} key={index} id={test.id} onClose={() => setIsDrawerOpen(false)} title={test.Name} trigger={
-								<Card shadow={"none"} bordered className="h-auto shadow-medium border-2 bg-white">
+							<Drawer key={index} id={test.id} onClose={() => setIsDrawerOpen(false)} title={test.Name} trigger={
+								<Card shadow={"none"} className="h-auto shadow-medium border-2 bg-white">
 									<CardBody key={index} className="grid grid-cols-[1fr_3fr] justify-left items-center">
 										<div></div>
 										<div>
@@ -60,7 +63,7 @@ const TestCards = () => {
 									</CardBody>
 								</Card>
 							}>
-								<SidebarAnalytics />
+								<SidebarAnalytics client:only data={{ "Name": test.Name, "correct":test.correct, "wrong": test.wrong, "avg": test.average_score }} />
 							</Drawer>
 						)) : null
 					}
