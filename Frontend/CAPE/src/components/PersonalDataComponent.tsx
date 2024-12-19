@@ -27,6 +27,7 @@ const PersonalDataComponent = () => {
 		fetch(settings.apiroot + "get_dash_data", reqOpts)
 			.then(response => response.json())
 			.then(result => {
+				console.log(result)
 				setUserData(result);
 				setIsLoading(false);
 			})
@@ -62,31 +63,4 @@ const PersonalDataComponent = () => {
 
 }
 
-// {
-// 	"user_type": "dual",
-// 		"username": "Nikhil",
-// 			"email": "ndbendale2004@gmail.com",
-// 				"correct": 1,
-// 					"wrong": 1,
-// 						"exams_attempted": 1,
-// 							"average_score": 50,
-// 								"upcoming_exams": [
-// 									{
-// 										"Name": "Test_upcoming",
-// 										"id": "7aeacc4c-7978-4124-82af-de2f04151ab8",
-// 										"attempts": 1,
-// 										"datetime": "2024-12-26 12:57:06+00:00",
-// 										"duration": "1800.0"
-// 									}
-// 								],
-// 									"past_exams": [
-// 										{
-// 											"Name": "Testing Exam",
-// 											"id": "acd9b568-6b92-4141-b6da-02a495cf78ce",
-// 											"attempts": 1,
-// 											"datetime": "2024-11-25 08:44:13+00:00",
-// 											"duration": "1800.0"
-// 										}
-// 									]
-// }
 export default PersonalDataComponent;

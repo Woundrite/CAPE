@@ -27,6 +27,7 @@ const useWebcamScreenshotInterval = (duration: number) => {
 							...prevState,
 							blob
 						]))
+						console.log(blob);
 					})
 					.catch((error: any) => {
 						console.log(error);

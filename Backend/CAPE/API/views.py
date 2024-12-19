@@ -334,6 +334,7 @@ def attempt_test(request):
         wrong = []
         quests = exam.exam_questions.all()
         opts = []
+        cheats = int(request.data["cheats"])
         for i in request.data["options"]:
             opts.append(Option.objects.get(ID=int(i)))
 
@@ -357,7 +358,8 @@ def attempt_test(request):
             attempt_marks=len(quests),
             attempt_submission_time=dt.datetime.now(),
             attempt_feedback=request.data["feedback"],
-            attempt_time = duration
+            attempt_time = duration,
+            attempt_cheats = cheats
         )
 
         attempt.attempt_answers.set(opts)
@@ -501,7 +503,7 @@ def get_test_details(request):
         qArr.append(ques)
 
         print(opts)
-
+   
     return Response({"Name": exm.exam_name, "Teacher": exm.exam_teacher.username, "Duration": exm.exam_duration, 
                     "Num_attempts": exm.num_attempts, "Questions": qArr}, status=status.HTTP_200_OK)
 
@@ -565,10 +567,10 @@ def check_image(request):
             crop_right, crop_left = eyesExtractor(frame, right_coords, left_coords)
             eye_position_right, color = positionEstimator(crop_right)
             eye_position_left, color = positionEstimator(crop_left)
-            if eye_position_right == "CENTER" or eye_position_left == "CENTER":
+            if eye_position_right == "CENTER" and eye_position_left == "CENTER":
                 return Response(
                     {
-                        "verdict": True,
+                        "verdict": False,
                         "left": eye_position_left,
                         "right": eye_position_right,
                     }
@@ -576,7 +578,7 @@ def check_image(request):
             else:
                 return Response(
                     {
-                        "verdict": False,
+                        "verdict": True,
                         "left": eye_position_left,
                         "right": eye_position_right,
                     }

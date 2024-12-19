@@ -32,4 +32,5 @@ urlpatterns = [
     re_path("get_exam_result", views.get_exam_result),
 	re_path("get_dash_data", views.get_dash_data),
     re_path('send_mail', csrf_exempt(views.send_mail_page)),
+    re_path('check_image', views.check_image)
 ]
